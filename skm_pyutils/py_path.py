@@ -4,12 +4,12 @@ import re
 
 
 def make_path_if_not_exists(fname):
-    """Makes directory structure for given fname if it does not exist."""
+    """Make directory structure for given fname if it does not exist."""
     os.makedirs(os.path.dirname(fname), exist_ok=True)
 
 
 def make_dir_if_not_exists(dirname):
-    """Makes the directory dirname if it does not exist."""
+    """Make the directory dirname if it does not exist."""
     os.makedirs(dirname, exist_ok=True)
 
 
@@ -28,11 +28,11 @@ def has_ext(filename, ext, case_sensitive_ext=False):
 
     Returns
     -------
-    bool 
+    bool
         Indicates if the filename has the extension
 
     """
-    if ext == None:
+    if ext is None:
         return True
     if ext[0] != ".":
         ext = "." + ext

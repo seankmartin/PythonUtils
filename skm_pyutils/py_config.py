@@ -9,7 +9,7 @@ import argparse
 
 def setup_text_logging(in_dir, bname="logfile.log", append=False):
     """
-    Setup logging file location.
+    Pass logging file location to logging.
 
     Parameters
     ----------
@@ -118,7 +118,7 @@ def parse_args(verbose=True):
 
 def log_exception(ex, more_info=""):
     """
-    Log an expection and additional info
+    Log an expection and additional info.
 
     Parameters
     ----------
@@ -132,7 +132,6 @@ def log_exception(ex, more_info=""):
     None
 
     """
-
     template = "{0} because exception of type {1} occurred. Arguments:\n{2!r}"
     message = template.format(more_info, type(ex).__name__, ex.args)
     logging.error(message)

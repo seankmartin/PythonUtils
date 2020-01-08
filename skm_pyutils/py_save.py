@@ -22,6 +22,7 @@ def save_mixed_dict_to_csv(in_dict, out_dir, out_name="results.csv"):
 
     Returns:
         None
+
     """
     def arr_to_str(name, arr):
         out_str = name
@@ -81,7 +82,7 @@ def save_dicts_to_csv(filename, in_dicts):
     for in_dict in in_dicts:
         names = in_dict.keys()
         for name in names:
-            if not name in max_key:
+            if name not in max_key:
                 max_key.append(name)
 
     try:
