@@ -147,3 +147,11 @@ def read_python(path):
     exec(contents, {}, metadata)
     metadata = {k.lower(): v for (k, v) in metadata.items()}
     return metadata
+
+
+def split_dict(in_dict, index):
+    new_dict = {}
+    for key, value in in_dict.items():
+        if isinstance(value, list):
+            new_dict[key] = value[index]
+    return new_dict
