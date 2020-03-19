@@ -135,3 +135,15 @@ def log_exception(ex, more_info=""):
     template = "{0} because exception of type {1} occurred. Arguments:\n{2!r}"
     message = template.format(more_info, type(ex).__name__, ex.args)
     logging.error(message)
+
+
+def read_python(path):
+    path = os.path.realpath(os.path.expanduser(path))
+    if not os.path.exists(path):
+        raise ValueError("{} does not exist to read".format(path))
+    with open(path, 'r') as f:
+        contents = f.read()
+    metadata = {}
+    exec(contents, {}, metadata)
+    metadata = {k.lower(): v for (k, v) in metadata.items()}
+    return metadata
