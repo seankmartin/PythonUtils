@@ -8,6 +8,16 @@ from skm_pyutils.py_path import make_path_if_not_exists
 from skm_pyutils.py_config import log_exception
 
 
+def arr_to_str(name, arr):
+    out_str = name
+    for val in arr:
+        if isinstance(val, str):
+            out_str = "{},{}".format(out_str, val)
+        else:
+            out_str = "{},{:4f}".format(out_str, val)
+    return out_str
+
+
 def save_mixed_dict_to_csv(in_dict, out_dir, out_name="results.csv"):
     """
     Save a dictionary with mixed value types to a csv.
@@ -24,17 +34,9 @@ def save_mixed_dict_to_csv(in_dict, out_dir, out_name="results.csv"):
         None
 
     """
-    def arr_to_str(name, arr):
-        out_str = name
-        for val in arr:
-            if isinstance(val, str):
-                out_str = "{},{}".format(out_str, val)
-            else:
-                out_str = "{},{:2f}".format(out_str, val)
-        return out_str
-
     out_loc = os.path.join(out_dir, out_name)
     make_path_if_not_exists(out_loc)
+    print("Saving mixed dict data to {}".format(out_loc))
     with open(out_loc, "w") as f:
         for key, val in in_dict.items():
             if isinstance(val, dict):
@@ -44,9 +46,8 @@ def save_mixed_dict_to_csv(in_dict, out_dir, out_name="results.csv"):
             elif isinstance(val, list):
                 out_str = arr_to_str(key, val)
             else:
-                print("Unrecognised type {} quitting".format(
+                raise ValueError("Unrecognised type {} quitting".format(
                     type(val)))
-                exit(-1)
             f.write(out_str + "\n")
 
 
@@ -86,6 +87,7 @@ def save_dicts_to_csv(filename, in_dicts):
                 max_key.append(name)
 
     try:
+        print("Saving summary data to {}".format(filename))
         make_path_if_not_exists(filename)
         with open(filename, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=max_key)
