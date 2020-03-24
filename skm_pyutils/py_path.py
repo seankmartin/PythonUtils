@@ -5,7 +5,8 @@ import re
 
 def make_path_if_not_exists(fname):
     """Make directory structure for given fname if it does not exist."""
-    os.makedirs(os.path.dirname(fname), exist_ok=True)
+    if os.path.dirname(fname) != "":
+        os.makedirs(os.path.dirname(fname), exist_ok=True)
 
 
 def make_dir_if_not_exists(dirname):

@@ -12,6 +12,7 @@ def arr_to_str(name, arr):
     out_str = name
     for val in arr:
         if isinstance(val, str):
+            val = val.replace(" ", "_")
             out_str = "{},{}".format(out_str, val)
         else:
             out_str = "{},{:4f}".format(out_str, val)
@@ -85,13 +86,14 @@ def save_dicts_to_csv(filename, in_dicts):
         for name in names:
             if name not in max_key:
                 max_key.append(name)
+    max_key_friendly = [k.replace(" ", "_") for k in max_key]
 
     try:
         print("Saving summary data to {}".format(filename))
         make_path_if_not_exists(filename)
         with open(filename, 'w', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=max_key)
-            writer.writeheader()
+            writer.writerow(dict(zip(max_key, max_key_friendly)))
             for in_dict in in_dicts:
                 writer.writerow(in_dict)
 
