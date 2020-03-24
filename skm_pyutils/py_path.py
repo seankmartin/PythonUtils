@@ -123,7 +123,7 @@ def get_all_files_in_dir(
     return onlyfiles
 
 
-def get_dirs_matching_regex(start_dir, re_filter=None, return_absolute=True):
+def get_dirs_matching_regex(start_dir, re_filters=None, return_absolute=True):
     """
     Recursively get all directories from start_dir that match regex.
 
@@ -145,10 +145,13 @@ def get_dirs_matching_regex(start_dir, re_filter=None, return_absolute=True):
         raise ValueError("Non existant directory " + str(start_dir))
 
     def match_filter(f):
-        if re_filter is None:
+        if re_filters is None:
             return True
-        search_res = re.search(re_filter, f)
-        return search_res is not None
+        for re_filter in re_filters:
+            search_res = re.search(re_filter, f)
+            if search_res is None:
+                return False
+        return True
 
     dirs = []
     for root, _, _ in os.walk(start_dir):
