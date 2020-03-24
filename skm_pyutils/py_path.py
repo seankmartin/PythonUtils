@@ -73,8 +73,7 @@ def get_all_files_in_dir(
 
     """
     if not os.path.isdir(in_dir):
-        print("Non existant directory " + str(in_dir))
-        return []
+        raise ValueError("Non existant directory " + str(in_dir))
 
     def match_filter(f):
         if re_filter is None:
@@ -122,3 +121,45 @@ def get_all_files_in_dir(
     if verbose:
         print()
     return onlyfiles
+
+
+def get_dirs_matching_regex(start_dir, re_filter=None, return_absolute=True):
+    """
+    Recursively get all directories from start_dir that match regex.
+
+    Parameters
+    ----------
+    start_dir : str
+        The path to the directory to start at.
+    re_filter : str, optional. Defaults to None.
+        The regular expression to match.
+        Returns all directories is passed as None.
+
+    Returns
+    -------
+    list
+        A list of directories matching the regex.
+
+    """
+    if not os.path.isdir(start_dir):
+        raise ValueError("Non existant directory " + str(start_dir))
+
+    def match_filter(f):
+        if re_filter is None:
+            return True
+        search_res = re.search(re_filter, f)
+        return search_res is not None
+
+    dirs = []
+    for root, _, _ in os.walk(start_dir):
+        start_root = root[:len(start_dir)]
+
+        if len(root) == len(start_root):
+            end_root = ""
+        else:
+            end_root = root[len(start_dir + os.sep):]
+
+        if match_filter(end_root):
+            to_add = root if return_absolute else end_root
+            dirs.append(to_add)
+    return dirs
