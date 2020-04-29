@@ -126,7 +126,8 @@ class GridFig:
             self, rows, cols=4,
             size_multiplier_x=5, size_multiplier_y=5,
             wspace=0.3, hspace=0.3,
-            tight_layout=False):
+            tight_layout=False,
+            traverse_rows=True):
         """
         Set up the grid specifications.
 
@@ -141,6 +142,7 @@ class GridFig:
         self.idx = 0
         self.rows = rows
         self.cols = cols
+        self.along_rows = traverse_rows
 
     def get_ax(self, row_idx, col_idx):
         """Add subplot with standard 1x1 gs -> returns ax."""
@@ -160,13 +162,22 @@ class GridFig:
         print("Saved figure to {}".format(out_loc))
         make_path_if_not_exists(out_loc)
         self.fig.savefig(out_loc, dpi=400)
-        plt.close()
+        plt.close(self.fig)
+
+    def savefig(self, fname, **kwargs):
+        """Passes all to matplotlib savefig call"""
+        print("Saved figure to {}".format(fname))
+        make_path_if_not_exists(fname)
+        if "dpi" not in kwargs.keys():
+            kwargs["dpi"] = 400
+        self.fig.savefig(fname, **kwargs)
+        plt.close(self.fig)
 
     def get_fig(self):
         """Return the figure object in this class."""
         return self.fig
 
-    def get_next(self, along_rows=True):
+    def get_next(self):
         """
         Get next index along rows or columns.
 
@@ -179,7 +190,7 @@ class GridFig:
         2   3   6   8   10  12  ...
 
         """
-        if along_rows:
+        if self.along_rows:
             row_idx = (self.idx // self.cols)
             col_idx = (self.idx % self.cols)
 
