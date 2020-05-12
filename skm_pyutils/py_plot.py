@@ -144,9 +144,12 @@ class GridFig:
         self.cols = cols
         self.along_rows = traverse_rows
 
-    def get_ax(self, row_idx, col_idx):
+    def get_ax(self, row_idx, col_idx, circular=False):
         """Add subplot with standard 1x1 gs -> returns ax."""
-        ax = self.fig.add_subplot(self.gs[row_idx, col_idx])
+        if circular:
+            ax = self.fig.add_subplot(self.gs[row_idx, col_idx], projection='polar')
+        else:
+            ax = self.fig.add_subplot(self.gs[row_idx, col_idx])
         return ax
 
     def get_multi_ax(self, row_start, row_end, col_start, col_end):
@@ -177,7 +180,7 @@ class GridFig:
         """Return the figure object in this class."""
         return self.fig
 
-    def get_next(self):
+    def get_next(self, circular=False):
         """
         Get next index along rows or columns.
 
@@ -194,12 +197,12 @@ class GridFig:
             row_idx = (self.idx // self.cols)
             col_idx = (self.idx % self.cols)
 
-            ax = self.get_ax(row_idx, col_idx)
+            ax = self.get_ax(row_idx, col_idx, circular=circular)
         else:
             row_idx = (self.idx % self.rows)
             col_idx = (self.idx // self.rows)
 
-            ax = self.get_ax(row_idx, col_idx)
+            ax = self.get_ax(row_idx, col_idx, circular=circular)
         self._increment()
         return ax
 
