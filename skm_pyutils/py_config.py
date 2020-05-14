@@ -81,7 +81,7 @@ def print_cfg(config, msg=""):
     pprint(config_dict, width=120)
 
 
-def parse_args(verbose=True):
+def parse_args(parser, verbose=True):
     """
     Parse command line arguments into a Namespace.
 
@@ -101,8 +101,6 @@ def parse_args(verbose=True):
         If any arguments are passed which are not used in program.
 
     """
-    parser = argparse.ArgumentParser(
-        description='Process modifiable parameters from command line')
     args, unparsed = parser.parse_known_args()
 
     if len(unparsed) != 0:
