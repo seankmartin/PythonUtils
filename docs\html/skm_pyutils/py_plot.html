@@ -1,0 +1,911 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>skm_pyutils.py_plot API documentation</title>
+<meta name="description" content="Utilities for plotting with matplotlib." />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>skm_pyutils.py_plot</code></h1>
+</header>
+<section id="section-intro">
+<p>Utilities for plotting with matplotlib.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;Utilities for plotting with matplotlib.&#34;&#34;&#34;
+
+&#34;&#34;&#34;Plotting functions for the bvmpc module.&#34;&#34;&#34;
+
+import os
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+import seaborn as sns
+import colorsys
+from collections import OrderedDict
+
+from skm_pyutils.py_path import make_path_if_not_exists
+
+
+class GroupManager:
+    def __init__(self, group_list):
+        self.group_list = group_list
+        print(self.group_list)
+        self.info_dict = OrderedDict()
+        self.index = 0
+        self.color_list = [
+            &#34;Blues&#34;, &#34;Oranges&#34;, &#34;Greens&#34;, &#34;Reds&#34;, &#34;Purples&#34;, &#34;Greys&#34;]
+        set_vals = sorted(set(group_list), key=group_list.index)
+        print(set_vals)
+        import numpy as np
+        if len(set_vals) &gt; len(self.color_list):
+            start_vals = np.arange(0.0, 2.5, 2.5 / (len(set_vals) - 0.99))
+            for set_v, start_v in zip(set_vals, start_vals):
+                self.info_dict[set_v] = ColorManager(
+                    group_list.count(set_v), &#34;sns_helix&#34;, start=start_v)
+        else:
+            start_vals = self.color_list[:len(set_vals)]
+            for set_v, start_v in zip(set_vals, start_vals):
+                self.info_dict[set_v] = ColorManager(
+                    group_list.count(set_v), &#34;sns&#34;, sns_style=start_v)
+        print(self.info_dict)
+
+    def get_next_color(self):
+        out = self.info_dict[self.group_list[self.index]].get_next_color()
+        self._increment()
+        return out
+
+    def _increment(self):
+        self.index += 1
+        if self.index == len(self.group_list):
+            self.index = 0
+
+    def test_plot(self):
+        from scipy.stats import norm
+        import numpy as np
+        fig, ax = plt.subplots()
+        x_axis = np.arange(-15, 5, 0.001)
+        std_devs = np.arange(0.8, 3, 2.20 / len(self.group_list))
+        for sd in std_devs:
+            ax.plot(
+                x_axis, norm.pdf(x_axis, -sd * 2, sd),
+                color=self.get_next_color())
+        sns.despine(top=True, bottom=True, right=True, left=True)
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
+        fig.savefig(&#34;test.png&#34;, dpi=400)
+
+
+class ColorManager:
+    def __init__(self, num_colors, method=&#34;sns&#34;, **kwargs):
+        self.num_colors = num_colors
+        if method == &#34;sns&#34;:
+            sns_style = kwargs.get(&#34;sns_style&#34;, None)
+            self.create_sns_palette(s_type=sns_style)
+        elif method == &#34;rgb&#34;:
+            self.create_rgb()
+        elif method == &#34;sns_helix&#34;:
+            start = kwargs.get(&#34;start&#34;, 0)
+            self.create_sns_helix(start)
+        else:
+            raise ValueError(&#34;{} not recognised method&#34;.format(
+                method))
+        self.idx = 0
+
+    def create_rgb(self):
+        N = self.num_colors
+        HSV_tuples = [(x * 1.0 / N, 0.5, 0.5) for x in range(N)]
+        RGB_tuples = map(lambda x: colorsys.hsv_to_rgb(*x), HSV_tuples)
+        self.colors = list(RGB_tuples)
+
+    def create_sns_palette(self, s_type=None):
+        self.colors = sns.color_palette(s_type, self.num_colors)
+
+    def create_sns_helix(self, start):
+        self.colors = sns.cubehelix_palette(self.num_colors, start)
+
+    def get_next_color(self):
+        result = self.colors[self.idx]
+        self._increment()
+        return result
+
+    def get_color(self, index):
+        return self.colors[index]
+
+    def test_plot(self):
+        from scipy.stats import norm
+        import numpy as np
+        fig, ax = plt.subplots()
+        x_axis = np.arange(-15, 5, 0.001)
+        std_devs = np.arange(0.8, 3, 2.20 / self.num_colors)
+        for sd in std_devs:
+            ax.plot(
+                x_axis, norm.pdf(x_axis, -sd * 2, sd),
+                color=self.get_next_color())
+        sns.despine(top=True, bottom=True, right=True, left=True)
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
+        fig.savefig(&#34;test.png&#34;, dpi=400)
+
+    def _increment(self):
+        &#34;&#34;&#34;Private function to increase the internal idx counter.&#34;&#34;&#34;
+        self.idx = self.idx + 1
+        if self.idx == self.num_colors:
+            self.idx = 0
+
+
+class GridFig:
+    &#34;&#34;&#34;Handles gridded figures.&#34;&#34;&#34;
+
+    def __init__(
+            self, rows, cols=4,
+            size_multiplier_x=5, size_multiplier_y=5,
+            wspace=0.3, hspace=0.3,
+            tight_layout=False,
+            traverse_rows=True):
+        &#34;&#34;&#34;
+        Set up the grid specifications.
+
+        size_multiplier, wspace, and hspace are used for spacing
+
+        &#34;&#34;&#34;
+        self.fig = plt.figure(
+            figsize=(cols * size_multiplier_x,
+                     rows * size_multiplier_y),
+            tight_layout=tight_layout)
+        self.gs = gridspec.GridSpec(rows, cols, wspace=wspace, hspace=hspace)
+        self.idx = 0
+        self.rows = rows
+        self.cols = cols
+        self.along_rows = traverse_rows
+
+    def get_ax(self, row_idx, col_idx, circular=False):
+        &#34;&#34;&#34;Add subplot with standard 1x1 gs -&gt; returns ax.&#34;&#34;&#34;
+        if circular:
+            ax = self.fig.add_subplot(self.gs[row_idx, col_idx], projection=&#39;polar&#39;)
+        else:
+            ax = self.fig.add_subplot(self.gs[row_idx, col_idx])
+        return ax
+
+    def get_multi_ax(self, row_start, row_end, col_start, col_end):
+        &#34;&#34;&#34;Add subplot with custom gs sizes -&gt; returns ax.&#34;&#34;&#34;
+        ax = self.fig.add_subplot(
+            self.gs[row_start:row_end, col_start:col_end])
+        plt.subplots_adjust(top=0.85)
+        return ax
+
+    def save_fig(self, out_dir, out_name):
+        &#34;&#34;&#34;Names and saves figure.&#34;&#34;&#34;
+        out_loc = os.path.join(out_dir, out_name)
+        print(&#34;Saved figure to {}&#34;.format(out_loc))
+        make_path_if_not_exists(out_loc)
+        self.fig.savefig(out_loc, dpi=400)
+        plt.close(self.fig)
+
+    def savefig(self, fname, **kwargs):
+        &#34;&#34;&#34;Passes all to matplotlib savefig call&#34;&#34;&#34;
+        print(&#34;Saved figure to {}&#34;.format(fname))
+        make_path_if_not_exists(fname)
+        if &#34;dpi&#34; not in kwargs.keys():
+            kwargs[&#34;dpi&#34;] = 400
+        self.fig.savefig(fname, **kwargs)
+        plt.close(self.fig)
+
+    def get_fig(self):
+        &#34;&#34;&#34;Return the figure object in this class.&#34;&#34;&#34;
+        return self.fig
+
+    def get_next(self, circular=False):
+        &#34;&#34;&#34;
+        Get next index along rows or columns.
+
+        along rows:
+        1   2   3   4   5   6
+        7   8   9   10  11  12  ...
+
+        else:
+        1   3   5   7   9   11
+        2   3   6   8   10  12  ...
+
+        &#34;&#34;&#34;
+        if self.along_rows:
+            row_idx = (self.idx // self.cols)
+            col_idx = (self.idx % self.cols)
+
+            ax = self.get_ax(row_idx, col_idx, circular=circular)
+        else:
+            row_idx = (self.idx % self.rows)
+            col_idx = (self.idx // self.rows)
+
+            ax = self.get_ax(row_idx, col_idx, circular=circular)
+        self._increment()
+        return ax
+
+    def get_next_snake(self):
+        &#34;&#34;&#34;
+        Get the next index in a snake like pattern.
+
+        1   2   5   6   9   10  ...
+        3   4   7   8   11  12  ..
+
+        &#34;&#34;&#34;
+        if self.rows != 2:
+            raise ValueError(&#34;Can&#39;t get snake unless there are two rows&#34;)
+        i = self.idx
+        row_idx = (i // 2) % 2
+        col_idx = (i // 2) + (i % 2) - row_idx
+        ax = self.get_ax(row_idx, col_idx)
+        self._increment()
+        return ax
+
+    def _increment(self):
+        &#34;&#34;&#34;Private function to increase the internal idx counter.&#34;&#34;&#34;
+        self.idx = self.idx + 1
+        if self.idx == self.rows * self.cols:
+            self.idx = 0</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="skm_pyutils.py_plot.ColorManager"><code class="flex name class">
+<span>class <span class="ident">ColorManager</span></span>
+<span>(</span><span>num_colors, method='sns', **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ColorManager:
+    def __init__(self, num_colors, method=&#34;sns&#34;, **kwargs):
+        self.num_colors = num_colors
+        if method == &#34;sns&#34;:
+            sns_style = kwargs.get(&#34;sns_style&#34;, None)
+            self.create_sns_palette(s_type=sns_style)
+        elif method == &#34;rgb&#34;:
+            self.create_rgb()
+        elif method == &#34;sns_helix&#34;:
+            start = kwargs.get(&#34;start&#34;, 0)
+            self.create_sns_helix(start)
+        else:
+            raise ValueError(&#34;{} not recognised method&#34;.format(
+                method))
+        self.idx = 0
+
+    def create_rgb(self):
+        N = self.num_colors
+        HSV_tuples = [(x * 1.0 / N, 0.5, 0.5) for x in range(N)]
+        RGB_tuples = map(lambda x: colorsys.hsv_to_rgb(*x), HSV_tuples)
+        self.colors = list(RGB_tuples)
+
+    def create_sns_palette(self, s_type=None):
+        self.colors = sns.color_palette(s_type, self.num_colors)
+
+    def create_sns_helix(self, start):
+        self.colors = sns.cubehelix_palette(self.num_colors, start)
+
+    def get_next_color(self):
+        result = self.colors[self.idx]
+        self._increment()
+        return result
+
+    def get_color(self, index):
+        return self.colors[index]
+
+    def test_plot(self):
+        from scipy.stats import norm
+        import numpy as np
+        fig, ax = plt.subplots()
+        x_axis = np.arange(-15, 5, 0.001)
+        std_devs = np.arange(0.8, 3, 2.20 / self.num_colors)
+        for sd in std_devs:
+            ax.plot(
+                x_axis, norm.pdf(x_axis, -sd * 2, sd),
+                color=self.get_next_color())
+        sns.despine(top=True, bottom=True, right=True, left=True)
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
+        fig.savefig(&#34;test.png&#34;, dpi=400)
+
+    def _increment(self):
+        &#34;&#34;&#34;Private function to increase the internal idx counter.&#34;&#34;&#34;
+        self.idx = self.idx + 1
+        if self.idx == self.num_colors:
+            self.idx = 0</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="skm_pyutils.py_plot.ColorManager.create_rgb"><code class="name flex">
+<span>def <span class="ident">create_rgb</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_rgb(self):
+    N = self.num_colors
+    HSV_tuples = [(x * 1.0 / N, 0.5, 0.5) for x in range(N)]
+    RGB_tuples = map(lambda x: colorsys.hsv_to_rgb(*x), HSV_tuples)
+    self.colors = list(RGB_tuples)</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_plot.ColorManager.create_sns_helix"><code class="name flex">
+<span>def <span class="ident">create_sns_helix</span></span>(<span>self, start)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_sns_helix(self, start):
+    self.colors = sns.cubehelix_palette(self.num_colors, start)</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_plot.ColorManager.create_sns_palette"><code class="name flex">
+<span>def <span class="ident">create_sns_palette</span></span>(<span>self, s_type=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_sns_palette(self, s_type=None):
+    self.colors = sns.color_palette(s_type, self.num_colors)</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_plot.ColorManager.get_color"><code class="name flex">
+<span>def <span class="ident">get_color</span></span>(<span>self, index)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_color(self, index):
+    return self.colors[index]</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_plot.ColorManager.get_next_color"><code class="name flex">
+<span>def <span class="ident">get_next_color</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_next_color(self):
+    result = self.colors[self.idx]
+    self._increment()
+    return result</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_plot.ColorManager.test_plot"><code class="name flex">
+<span>def <span class="ident">test_plot</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_plot(self):
+    from scipy.stats import norm
+    import numpy as np
+    fig, ax = plt.subplots()
+    x_axis = np.arange(-15, 5, 0.001)
+    std_devs = np.arange(0.8, 3, 2.20 / self.num_colors)
+    for sd in std_devs:
+        ax.plot(
+            x_axis, norm.pdf(x_axis, -sd * 2, sd),
+            color=self.get_next_color())
+    sns.despine(top=True, bottom=True, right=True, left=True)
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    fig.savefig(&#34;test.png&#34;, dpi=400)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="skm_pyutils.py_plot.GridFig"><code class="flex name class">
+<span>class <span class="ident">GridFig</span></span>
+<span>(</span><span>rows, cols=4, size_multiplier_x=5, size_multiplier_y=5, wspace=0.3, hspace=0.3, tight_layout=False, traverse_rows=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Handles gridded figures.</p>
+<p>Set up the grid specifications.</p>
+<p>size_multiplier, wspace, and hspace are used for spacing</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GridFig:
+    &#34;&#34;&#34;Handles gridded figures.&#34;&#34;&#34;
+
+    def __init__(
+            self, rows, cols=4,
+            size_multiplier_x=5, size_multiplier_y=5,
+            wspace=0.3, hspace=0.3,
+            tight_layout=False,
+            traverse_rows=True):
+        &#34;&#34;&#34;
+        Set up the grid specifications.
+
+        size_multiplier, wspace, and hspace are used for spacing
+
+        &#34;&#34;&#34;
+        self.fig = plt.figure(
+            figsize=(cols * size_multiplier_x,
+                     rows * size_multiplier_y),
+            tight_layout=tight_layout)
+        self.gs = gridspec.GridSpec(rows, cols, wspace=wspace, hspace=hspace)
+        self.idx = 0
+        self.rows = rows
+        self.cols = cols
+        self.along_rows = traverse_rows
+
+    def get_ax(self, row_idx, col_idx, circular=False):
+        &#34;&#34;&#34;Add subplot with standard 1x1 gs -&gt; returns ax.&#34;&#34;&#34;
+        if circular:
+            ax = self.fig.add_subplot(self.gs[row_idx, col_idx], projection=&#39;polar&#39;)
+        else:
+            ax = self.fig.add_subplot(self.gs[row_idx, col_idx])
+        return ax
+
+    def get_multi_ax(self, row_start, row_end, col_start, col_end):
+        &#34;&#34;&#34;Add subplot with custom gs sizes -&gt; returns ax.&#34;&#34;&#34;
+        ax = self.fig.add_subplot(
+            self.gs[row_start:row_end, col_start:col_end])
+        plt.subplots_adjust(top=0.85)
+        return ax
+
+    def save_fig(self, out_dir, out_name):
+        &#34;&#34;&#34;Names and saves figure.&#34;&#34;&#34;
+        out_loc = os.path.join(out_dir, out_name)
+        print(&#34;Saved figure to {}&#34;.format(out_loc))
+        make_path_if_not_exists(out_loc)
+        self.fig.savefig(out_loc, dpi=400)
+        plt.close(self.fig)
+
+    def savefig(self, fname, **kwargs):
+        &#34;&#34;&#34;Passes all to matplotlib savefig call&#34;&#34;&#34;
+        print(&#34;Saved figure to {}&#34;.format(fname))
+        make_path_if_not_exists(fname)
+        if &#34;dpi&#34; not in kwargs.keys():
+            kwargs[&#34;dpi&#34;] = 400
+        self.fig.savefig(fname, **kwargs)
+        plt.close(self.fig)
+
+    def get_fig(self):
+        &#34;&#34;&#34;Return the figure object in this class.&#34;&#34;&#34;
+        return self.fig
+
+    def get_next(self, circular=False):
+        &#34;&#34;&#34;
+        Get next index along rows or columns.
+
+        along rows:
+        1   2   3   4   5   6
+        7   8   9   10  11  12  ...
+
+        else:
+        1   3   5   7   9   11
+        2   3   6   8   10  12  ...
+
+        &#34;&#34;&#34;
+        if self.along_rows:
+            row_idx = (self.idx // self.cols)
+            col_idx = (self.idx % self.cols)
+
+            ax = self.get_ax(row_idx, col_idx, circular=circular)
+        else:
+            row_idx = (self.idx % self.rows)
+            col_idx = (self.idx // self.rows)
+
+            ax = self.get_ax(row_idx, col_idx, circular=circular)
+        self._increment()
+        return ax
+
+    def get_next_snake(self):
+        &#34;&#34;&#34;
+        Get the next index in a snake like pattern.
+
+        1   2   5   6   9   10  ...
+        3   4   7   8   11  12  ..
+
+        &#34;&#34;&#34;
+        if self.rows != 2:
+            raise ValueError(&#34;Can&#39;t get snake unless there are two rows&#34;)
+        i = self.idx
+        row_idx = (i // 2) % 2
+        col_idx = (i // 2) + (i % 2) - row_idx
+        ax = self.get_ax(row_idx, col_idx)
+        self._increment()
+        return ax
+
+    def _increment(self):
+        &#34;&#34;&#34;Private function to increase the internal idx counter.&#34;&#34;&#34;
+        self.idx = self.idx + 1
+        if self.idx == self.rows * self.cols:
+            self.idx = 0</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="skm_pyutils.py_plot.GridFig.get_ax"><code class="name flex">
+<span>def <span class="ident">get_ax</span></span>(<span>self, row_idx, col_idx, circular=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add subplot with standard 1x1 gs -&gt; returns ax.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_ax(self, row_idx, col_idx, circular=False):
+    &#34;&#34;&#34;Add subplot with standard 1x1 gs -&gt; returns ax.&#34;&#34;&#34;
+    if circular:
+        ax = self.fig.add_subplot(self.gs[row_idx, col_idx], projection=&#39;polar&#39;)
+    else:
+        ax = self.fig.add_subplot(self.gs[row_idx, col_idx])
+    return ax</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_plot.GridFig.get_fig"><code class="name flex">
+<span>def <span class="ident">get_fig</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return the figure object in this class.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_fig(self):
+    &#34;&#34;&#34;Return the figure object in this class.&#34;&#34;&#34;
+    return self.fig</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_plot.GridFig.get_multi_ax"><code class="name flex">
+<span>def <span class="ident">get_multi_ax</span></span>(<span>self, row_start, row_end, col_start, col_end)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add subplot with custom gs sizes -&gt; returns ax.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_multi_ax(self, row_start, row_end, col_start, col_end):
+    &#34;&#34;&#34;Add subplot with custom gs sizes -&gt; returns ax.&#34;&#34;&#34;
+    ax = self.fig.add_subplot(
+        self.gs[row_start:row_end, col_start:col_end])
+    plt.subplots_adjust(top=0.85)
+    return ax</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_plot.GridFig.get_next"><code class="name flex">
+<span>def <span class="ident">get_next</span></span>(<span>self, circular=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get next index along rows or columns.</p>
+<p>along rows:
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+&hellip;</p>
+<p>else:
+1
+3
+5
+7
+9
+11
+2
+3
+6
+8
+10
+12
+&hellip;</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_next(self, circular=False):
+    &#34;&#34;&#34;
+    Get next index along rows or columns.
+
+    along rows:
+    1   2   3   4   5   6
+    7   8   9   10  11  12  ...
+
+    else:
+    1   3   5   7   9   11
+    2   3   6   8   10  12  ...
+
+    &#34;&#34;&#34;
+    if self.along_rows:
+        row_idx = (self.idx // self.cols)
+        col_idx = (self.idx % self.cols)
+
+        ax = self.get_ax(row_idx, col_idx, circular=circular)
+    else:
+        row_idx = (self.idx % self.rows)
+        col_idx = (self.idx // self.rows)
+
+        ax = self.get_ax(row_idx, col_idx, circular=circular)
+    self._increment()
+    return ax</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_plot.GridFig.get_next_snake"><code class="name flex">
+<span>def <span class="ident">get_next_snake</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the next index in a snake like pattern.</p>
+<p>1
+2
+5
+6
+9
+10
+&hellip;
+3
+4
+7
+8
+11
+12
+..</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_next_snake(self):
+    &#34;&#34;&#34;
+    Get the next index in a snake like pattern.
+
+    1   2   5   6   9   10  ...
+    3   4   7   8   11  12  ..
+
+    &#34;&#34;&#34;
+    if self.rows != 2:
+        raise ValueError(&#34;Can&#39;t get snake unless there are two rows&#34;)
+    i = self.idx
+    row_idx = (i // 2) % 2
+    col_idx = (i // 2) + (i % 2) - row_idx
+    ax = self.get_ax(row_idx, col_idx)
+    self._increment()
+    return ax</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_plot.GridFig.save_fig"><code class="name flex">
+<span>def <span class="ident">save_fig</span></span>(<span>self, out_dir, out_name)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Names and saves figure.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_fig(self, out_dir, out_name):
+    &#34;&#34;&#34;Names and saves figure.&#34;&#34;&#34;
+    out_loc = os.path.join(out_dir, out_name)
+    print(&#34;Saved figure to {}&#34;.format(out_loc))
+    make_path_if_not_exists(out_loc)
+    self.fig.savefig(out_loc, dpi=400)
+    plt.close(self.fig)</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_plot.GridFig.savefig"><code class="name flex">
+<span>def <span class="ident">savefig</span></span>(<span>self, fname, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Passes all to matplotlib savefig call</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def savefig(self, fname, **kwargs):
+    &#34;&#34;&#34;Passes all to matplotlib savefig call&#34;&#34;&#34;
+    print(&#34;Saved figure to {}&#34;.format(fname))
+    make_path_if_not_exists(fname)
+    if &#34;dpi&#34; not in kwargs.keys():
+        kwargs[&#34;dpi&#34;] = 400
+    self.fig.savefig(fname, **kwargs)
+    plt.close(self.fig)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="skm_pyutils.py_plot.GroupManager"><code class="flex name class">
+<span>class <span class="ident">GroupManager</span></span>
+<span>(</span><span>group_list)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GroupManager:
+    def __init__(self, group_list):
+        self.group_list = group_list
+        print(self.group_list)
+        self.info_dict = OrderedDict()
+        self.index = 0
+        self.color_list = [
+            &#34;Blues&#34;, &#34;Oranges&#34;, &#34;Greens&#34;, &#34;Reds&#34;, &#34;Purples&#34;, &#34;Greys&#34;]
+        set_vals = sorted(set(group_list), key=group_list.index)
+        print(set_vals)
+        import numpy as np
+        if len(set_vals) &gt; len(self.color_list):
+            start_vals = np.arange(0.0, 2.5, 2.5 / (len(set_vals) - 0.99))
+            for set_v, start_v in zip(set_vals, start_vals):
+                self.info_dict[set_v] = ColorManager(
+                    group_list.count(set_v), &#34;sns_helix&#34;, start=start_v)
+        else:
+            start_vals = self.color_list[:len(set_vals)]
+            for set_v, start_v in zip(set_vals, start_vals):
+                self.info_dict[set_v] = ColorManager(
+                    group_list.count(set_v), &#34;sns&#34;, sns_style=start_v)
+        print(self.info_dict)
+
+    def get_next_color(self):
+        out = self.info_dict[self.group_list[self.index]].get_next_color()
+        self._increment()
+        return out
+
+    def _increment(self):
+        self.index += 1
+        if self.index == len(self.group_list):
+            self.index = 0
+
+    def test_plot(self):
+        from scipy.stats import norm
+        import numpy as np
+        fig, ax = plt.subplots()
+        x_axis = np.arange(-15, 5, 0.001)
+        std_devs = np.arange(0.8, 3, 2.20 / len(self.group_list))
+        for sd in std_devs:
+            ax.plot(
+                x_axis, norm.pdf(x_axis, -sd * 2, sd),
+                color=self.get_next_color())
+        sns.despine(top=True, bottom=True, right=True, left=True)
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
+        fig.savefig(&#34;test.png&#34;, dpi=400)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="skm_pyutils.py_plot.GroupManager.get_next_color"><code class="name flex">
+<span>def <span class="ident">get_next_color</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_next_color(self):
+    out = self.info_dict[self.group_list[self.index]].get_next_color()
+    self._increment()
+    return out</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_plot.GroupManager.test_plot"><code class="name flex">
+<span>def <span class="ident">test_plot</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_plot(self):
+    from scipy.stats import norm
+    import numpy as np
+    fig, ax = plt.subplots()
+    x_axis = np.arange(-15, 5, 0.001)
+    std_devs = np.arange(0.8, 3, 2.20 / len(self.group_list))
+    for sd in std_devs:
+        ax.plot(
+            x_axis, norm.pdf(x_axis, -sd * 2, sd),
+            color=self.get_next_color())
+    sns.despine(top=True, bottom=True, right=True, left=True)
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    fig.savefig(&#34;test.png&#34;, dpi=400)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="skm_pyutils" href="index.html">skm_pyutils</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="skm_pyutils.py_plot.ColorManager" href="#skm_pyutils.py_plot.ColorManager">ColorManager</a></code></h4>
+<ul class="two-column">
+<li><code><a title="skm_pyutils.py_plot.ColorManager.create_rgb" href="#skm_pyutils.py_plot.ColorManager.create_rgb">create_rgb</a></code></li>
+<li><code><a title="skm_pyutils.py_plot.ColorManager.create_sns_helix" href="#skm_pyutils.py_plot.ColorManager.create_sns_helix">create_sns_helix</a></code></li>
+<li><code><a title="skm_pyutils.py_plot.ColorManager.create_sns_palette" href="#skm_pyutils.py_plot.ColorManager.create_sns_palette">create_sns_palette</a></code></li>
+<li><code><a title="skm_pyutils.py_plot.ColorManager.get_color" href="#skm_pyutils.py_plot.ColorManager.get_color">get_color</a></code></li>
+<li><code><a title="skm_pyutils.py_plot.ColorManager.get_next_color" href="#skm_pyutils.py_plot.ColorManager.get_next_color">get_next_color</a></code></li>
+<li><code><a title="skm_pyutils.py_plot.ColorManager.test_plot" href="#skm_pyutils.py_plot.ColorManager.test_plot">test_plot</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="skm_pyutils.py_plot.GridFig" href="#skm_pyutils.py_plot.GridFig">GridFig</a></code></h4>
+<ul class="two-column">
+<li><code><a title="skm_pyutils.py_plot.GridFig.get_ax" href="#skm_pyutils.py_plot.GridFig.get_ax">get_ax</a></code></li>
+<li><code><a title="skm_pyutils.py_plot.GridFig.get_fig" href="#skm_pyutils.py_plot.GridFig.get_fig">get_fig</a></code></li>
+<li><code><a title="skm_pyutils.py_plot.GridFig.get_multi_ax" href="#skm_pyutils.py_plot.GridFig.get_multi_ax">get_multi_ax</a></code></li>
+<li><code><a title="skm_pyutils.py_plot.GridFig.get_next" href="#skm_pyutils.py_plot.GridFig.get_next">get_next</a></code></li>
+<li><code><a title="skm_pyutils.py_plot.GridFig.get_next_snake" href="#skm_pyutils.py_plot.GridFig.get_next_snake">get_next_snake</a></code></li>
+<li><code><a title="skm_pyutils.py_plot.GridFig.save_fig" href="#skm_pyutils.py_plot.GridFig.save_fig">save_fig</a></code></li>
+<li><code><a title="skm_pyutils.py_plot.GridFig.savefig" href="#skm_pyutils.py_plot.GridFig.savefig">savefig</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="skm_pyutils.py_plot.GroupManager" href="#skm_pyutils.py_plot.GroupManager">GroupManager</a></code></h4>
+<ul class="">
+<li><code><a title="skm_pyutils.py_plot.GroupManager.get_next_color" href="#skm_pyutils.py_plot.GroupManager.get_next_color">get_next_color</a></code></li>
+<li><code><a title="skm_pyutils.py_plot.GroupManager.test_plot" href="#skm_pyutils.py_plot.GroupManager.test_plot">test_plot</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
