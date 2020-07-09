@@ -136,11 +136,34 @@ def log_exception(ex, more_info=""):
 
 
 def read_python(path):
+    """
+    Execute a python script at path.
+
+    The script is expected to have items visible at global scope,
+    which are stored as metadata.
+
+    Note
+    ----
+    The string "__dirname__" is magic and will be replaced by the
+    absolute path to the directory containing the script.
+
+    Parameters
+    ----------
+    path : string
+        The location of the python script.
+
+    Returns
+    -------
+    dict
+        The scripts global scope variables stored in a dictionary.
+
+    """
     path = os.path.realpath(os.path.expanduser(path))
     if not os.path.exists(path):
         raise ValueError("{} does not exist to read".format(path))
     with open(path, 'r') as f:
         contents = f.read()
+    contents = contents.replace("__dirname__", os.path.abspath(os.path.dirname(path)))
     metadata = {}
     exec(contents, {}, metadata)
     metadata = {k.lower(): v for (k, v) in metadata.items()}
@@ -148,6 +171,22 @@ def read_python(path):
 
 
 def split_dict(in_dict, index):
+    """
+    Grab the value at index from each list in the dictionary.
+
+    Parameters
+    ----------
+    in_dict : dict
+        The dictionary to grab from
+    index : int
+        The index in the lists to pull from
+
+    Returns
+    -------
+    dict
+        The original dictionary but with index values pulled out.
+
+    """
     new_dict = {}
     for key, value in in_dict.items():
         if isinstance(value, list):
