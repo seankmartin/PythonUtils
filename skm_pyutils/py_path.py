@@ -101,7 +101,10 @@ def get_all_files_in_dir(
             if len(root) == len(start_root):
                 end_root = ""
             else:
-                end_root = root[len(in_dir + os.sep):]
+                if in_dir.endswith(os.sep):
+                    end_root = root[len(in_dir):]
+                else:
+                    end_root = root[len(in_dir + os.sep):]
             for filename in filenames:
                 filename = os.path.join(end_root, filename)
                 if ok_file(start_root, filename):
@@ -161,7 +164,10 @@ def get_dirs_matching_regex(start_dir, re_filters=None, return_absolute=True):
         if len(root) == len(start_root):
             end_root = ""
         else:
-            end_root = root[len(start_dir + os.sep):]
+            if start_dir.endswith(os.sep):
+                end_root = root[len(start_dir):]
+            else:
+                end_root = root[len(start_dir + os.sep):]
 
         if match_filter(end_root):
             to_add = root if return_absolute else end_root
