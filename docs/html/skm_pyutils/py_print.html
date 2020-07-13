@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.8.3" />
-<title>skm_pyutils API documentation</title>
-<meta name="description" content="skm_pyutils contains utility scripts created by Sean K Martin." />
+<title>skm_pyutils.py_print API documentation</title>
+<meta name="description" content="This module handles printing items such as dicts …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin>
@@ -19,45 +19,134 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Package <code>skm_pyutils</code></h1>
+<h1 class="title">Module <code>skm_pyutils.py_print</code></h1>
 </header>
 <section id="section-intro">
-<p>skm_pyutils contains utility scripts created by Sean K Martin.</p>
+<p>This module handles printing items such as dicts.</p>
+<p>One could alternatively use pprint for some of these.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34;skm_pyutils contains utility scripts created by Sean K Martin.&#34;&#34;&#34;</code></pre>
+<pre><code class="python">&#34;&#34;&#34;
+This module handles printing items such as dicts.
+
+One could alternatively use pprint for some of these.
+&#34;&#34;&#34;
+from pprint import pformat
+
+
+def walk_dict(d, depth=0):
+    &#34;&#34;&#34;Walk a Dictionary.&#34;&#34;&#34;
+    for k, v in sorted(d.items(), key=lambda x: x[0]):
+        spaces = (&#34;  &#34;) * depth
+        if hasattr(v, &#34;items&#34;):
+            print(spaces + (&#34;%s&#34; % k))
+            walk_dict(v, depth + 1)
+        else:
+            print(spaces + &#34;%s %s&#34; % (k, v))
+
+
+def print_attrs(d, depth=0):
+    &#34;&#34;&#34;Walk through attributes and print them.&#34;&#34;&#34;
+    for k, v in sorted(d.items(), key=lambda x: x[0]):
+        spaces = (&#34;  &#34;) * depth
+        spaces2 = (&#34;  &#34;) * (depth + 1)
+        if len(v.attrs) != 0:
+            print(&#34;{}{} has attrs:&#34;.format(spaces, k))
+            for key, val in v.attrs.items():
+                print(&#34;{}{} {}&#34;.format(spaces2, key, val))
+        if hasattr(v, &#34;items&#34;):
+            print(spaces + (&#34;%s&#34; % k))
+            print_attrs(v, depth=depth + 1)
+
+
+def print_h5(file_location):
+    &#34;&#34;&#34;Print a summary of a h5 file.&#34;&#34;&#34;
+    import h5py
+    with h5py.File(file_location, &#39;r&#39;, libver=&#39;latest&#39;) as f:
+        print(&#34;--------AVAILABLE METADATA--------&#34;)
+        for key, val in f.attrs.items():
+            print(key, val)
+        print_attrs(f)
+        print(&#34;\n--------AVAILABLE INFO--------&#34;)
+        walk_dict(f)
+        print()</code></pre>
 </details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt><code class="name"><a title="skm_pyutils.py_config" href="py_config.html">skm_pyutils.py_config</a></code></dt>
+<dt id="skm_pyutils.py_print.print_attrs"><code class="name flex">
+<span>def <span class="ident">print_attrs</span></span>(<span>d, depth=0)</span>
+</code></dt>
 <dd>
-<div class="desc"><p>Config file and logging related utility functions.</p></div>
+<div class="desc"><p>Walk through attributes and print them.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def print_attrs(d, depth=0):
+    &#34;&#34;&#34;Walk through attributes and print them.&#34;&#34;&#34;
+    for k, v in sorted(d.items(), key=lambda x: x[0]):
+        spaces = (&#34;  &#34;) * depth
+        spaces2 = (&#34;  &#34;) * (depth + 1)
+        if len(v.attrs) != 0:
+            print(&#34;{}{} has attrs:&#34;.format(spaces, k))
+            for key, val in v.attrs.items():
+                print(&#34;{}{} {}&#34;.format(spaces2, key, val))
+        if hasattr(v, &#34;items&#34;):
+            print(spaces + (&#34;%s&#34; % k))
+            print_attrs(v, depth=depth + 1)</code></pre>
+</details>
 </dd>
-<dt><code class="name"><a title="skm_pyutils.py_path" href="py_path.html">skm_pyutils.py_path</a></code></dt>
+<dt id="skm_pyutils.py_print.print_h5"><code class="name flex">
+<span>def <span class="ident">print_h5</span></span>(<span>file_location)</span>
+</code></dt>
 <dd>
-<div class="desc"><p>Path related utility functions.</p></div>
+<div class="desc"><p>Print a summary of a h5 file.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def print_h5(file_location):
+    &#34;&#34;&#34;Print a summary of a h5 file.&#34;&#34;&#34;
+    import h5py
+    with h5py.File(file_location, &#39;r&#39;, libver=&#39;latest&#39;) as f:
+        print(&#34;--------AVAILABLE METADATA--------&#34;)
+        for key, val in f.attrs.items():
+            print(key, val)
+        print_attrs(f)
+        print(&#34;\n--------AVAILABLE INFO--------&#34;)
+        walk_dict(f)
+        print()</code></pre>
+</details>
 </dd>
-<dt><code class="name"><a title="skm_pyutils.py_plot" href="py_plot.html">skm_pyutils.py_plot</a></code></dt>
+<dt id="skm_pyutils.py_print.walk_dict"><code class="name flex">
+<span>def <span class="ident">walk_dict</span></span>(<span>d, depth=0)</span>
+</code></dt>
 <dd>
-<div class="desc"><p>Utilities for plotting with matplotlib.</p></div>
-</dd>
-<dt><code class="name"><a title="skm_pyutils.py_print" href="py_print.html">skm_pyutils.py_print</a></code></dt>
-<dd>
-<div class="desc"><p>This module handles printing items such as dicts …</p></div>
-</dd>
-<dt><code class="name"><a title="skm_pyutils.py_save" href="py_save.html">skm_pyutils.py_save</a></code></dt>
-<dd>
-<div class="desc"><p>Utilities for saving structures to disk.</p></div>
+<div class="desc"><p>Walk a Dictionary.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def walk_dict(d, depth=0):
+    &#34;&#34;&#34;Walk a Dictionary.&#34;&#34;&#34;
+    for k, v in sorted(d.items(), key=lambda x: x[0]):
+        spaces = (&#34;  &#34;) * depth
+        if hasattr(v, &#34;items&#34;):
+            print(spaces + (&#34;%s&#34; % k))
+            walk_dict(v, depth + 1)
+        else:
+            print(spaces + &#34;%s %s&#34; % (k, v))</code></pre>
+</details>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
 </section>
 <section>
 </section>
@@ -68,13 +157,16 @@
 <ul></ul>
 </div>
 <ul id="index">
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3>Super-module</h3>
 <ul>
-<li><code><a title="skm_pyutils.py_config" href="py_config.html">skm_pyutils.py_config</a></code></li>
-<li><code><a title="skm_pyutils.py_path" href="py_path.html">skm_pyutils.py_path</a></code></li>
-<li><code><a title="skm_pyutils.py_plot" href="py_plot.html">skm_pyutils.py_plot</a></code></li>
-<li><code><a title="skm_pyutils.py_print" href="py_print.html">skm_pyutils.py_print</a></code></li>
-<li><code><a title="skm_pyutils.py_save" href="py_save.html">skm_pyutils.py_save</a></code></li>
+<li><code><a title="skm_pyutils" href="index.html">skm_pyutils</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="skm_pyutils.py_print.print_attrs" href="#skm_pyutils.py_print.print_attrs">print_attrs</a></code></li>
+<li><code><a title="skm_pyutils.py_print.print_h5" href="#skm_pyutils.py_print.print_h5">print_h5</a></code></li>
+<li><code><a title="skm_pyutils.py_print.walk_dict" href="#skm_pyutils.py_print.walk_dict">walk_dict</a></code></li>
 </ul>
 </li>
 </ul>
