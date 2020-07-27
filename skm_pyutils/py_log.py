@@ -24,6 +24,7 @@ def log_exception(ex, more_info="", location=None):
         Additional string to log, default is ""
     location : str, optional
         Where to store the log, default is
+        home/.skm_python/caught_errors.txt
 
     Returns
     -------
