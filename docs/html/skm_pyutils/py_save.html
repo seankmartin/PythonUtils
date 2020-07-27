@@ -76,8 +76,7 @@ def save_mixed_dict_to_csv(in_dict, out_dir, out_name=&#34;results.csv&#34;):
             elif isinstance(val, list):
                 out_str = arr_to_str(key, val)
             else:
-                raise ValueError(&#34;Unrecognised type {} quitting&#34;.format(
-                    type(val)))
+                raise ValueError(&#34;Unrecognised type {} quitting&#34;.format(type(val)))
             f.write(out_str + &#34;\n&#34;)
 
 
@@ -122,7 +121,7 @@ def save_dicts_to_csv(filename, in_dicts):
     try:
         print(&#34;Saving summary data to {}&#34;.format(filename))
         make_path_if_not_exists(filename)
-        with open(filename, &#39;w&#39;, newline=&#39;&#39;) as csvfile:
+        with open(filename, &#34;w&#34;, newline=&#34;&#34;) as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=max_key)
             writer.writerow(dict(zip(max_key, max_key_friendly)))
             for in_dict in in_dicts:
@@ -225,7 +224,7 @@ the values in the dict are mostly floats / ints / etc.</p>
     try:
         print(&#34;Saving summary data to {}&#34;.format(filename))
         make_path_if_not_exists(filename)
-        with open(filename, &#39;w&#39;, newline=&#39;&#39;) as csvfile:
+        with open(filename, &#34;w&#34;, newline=&#34;&#34;) as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=max_key)
             writer.writerow(dict(zip(max_key, max_key_friendly)))
             for in_dict in in_dicts:
@@ -285,8 +284,7 @@ Each key in the dictionary is saved as a row in the output csv.</p>
             elif isinstance(val, list):
                 out_str = arr_to_str(key, val)
             else:
-                raise ValueError(&#34;Unrecognised type {} quitting&#34;.format(
-                    type(val)))
+                raise ValueError(&#34;Unrecognised type {} quitting&#34;.format(type(val)))
             f.write(out_str + &#34;\n&#34;)</code></pre>
 </details>
 </dd>

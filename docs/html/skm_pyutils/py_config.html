@@ -56,9 +56,8 @@ def setup_text_logging(in_dir, bname=&#34;logfile.log&#34;, append=False):
     fname = os.path.join(in_dir, bname)
     if not append:
         if os.path.isfile(fname):
-            open(fname, &#39;w&#39;).close()
-    logging.basicConfig(
-        filename=fname, level=logging.DEBUG)
+            open(fname, &#34;w&#34;).close()
+    logging.basicConfig(filename=fname, level=logging.DEBUG)
     mpl_logger = logging.getLogger(&#34;matplotlib&#34;)
     mpl_logger.setLevel(level=logging.WARNING)
 
@@ -134,8 +133,8 @@ def parse_args(parser, verbose=True):
 
     if len(unparsed) != 0:
         raise ValueError(
-            &#34;Unrecognised command line arguments passed {}&#34;.format(
-                unparsed))
+            &#34;Unrecognised command line arguments passed {}&#34;.format(unparsed)
+        )
 
     if verbose:
         if len(sys.argv) &gt; 1:
@@ -190,7 +189,7 @@ def read_python(path):
     path = os.path.realpath(os.path.expanduser(path))
     if not os.path.exists(path):
         raise ValueError(&#34;{} does not exist to read&#34;.format(path))
-    with open(path, &#39;r&#39;) as f:
+    with open(path, &#34;r&#34;) as f:
         contents = f.read()
     contents = contents.replace(&#34;__dirname__&#34;, os.path.abspath(os.path.dirname(path)))
     metadata = {}
@@ -320,8 +319,8 @@ Additional string to log</p>
 
     if len(unparsed) != 0:
         raise ValueError(
-            &#34;Unrecognised command line arguments passed {}&#34;.format(
-                unparsed))
+            &#34;Unrecognised command line arguments passed {}&#34;.format(unparsed)
+        )
 
     if verbose:
         if len(sys.argv) &gt; 1:
@@ -468,7 +467,7 @@ absolute path to the directory containing the script.</p>
     path = os.path.realpath(os.path.expanduser(path))
     if not os.path.exists(path):
         raise ValueError(&#34;{} does not exist to read&#34;.format(path))
-    with open(path, &#39;r&#39;) as f:
+    with open(path, &#34;r&#34;) as f:
         contents = f.read()
     contents = contents.replace(&#34;__dirname__&#34;, os.path.abspath(os.path.dirname(path)))
     metadata = {}
@@ -520,9 +519,8 @@ absolute path to the directory containing the script.</p>
     fname = os.path.join(in_dir, bname)
     if not append:
         if os.path.isfile(fname):
-            open(fname, &#39;w&#39;).close()
-    logging.basicConfig(
-        filename=fname, level=logging.DEBUG)
+            open(fname, &#34;w&#34;).close()
+    logging.basicConfig(filename=fname, level=logging.DEBUG)
     mpl_logger = logging.getLogger(&#34;matplotlib&#34;)
     mpl_logger.setLevel(level=logging.WARNING)</code></pre>
 </details>

@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.8.3" />
-<title>skm_pyutils.py_print API documentation</title>
-<meta name="description" content="This module handles printing items such as dicts …" />
+<title>skm_pyutils.py_profile API documentation</title>
+<meta name="description" content="Utilities for code performance profiling." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin>
@@ -19,60 +19,71 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>skm_pyutils.py_print</code></h1>
+<h1 class="title">Module <code>skm_pyutils.py_profile</code></h1>
 </header>
 <section id="section-intro">
-<p>This module handles printing items such as dicts.</p>
-<p>One could alternatively use pprint for some of these.</p>
+<p>Utilities for code performance profiling.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34;
-This module handles printing items such as dicts.
-
-One could alternatively use pprint for some of these.
-&#34;&#34;&#34;
-from pprint import pformat
+<pre><code class="python">&#34;&#34;&#34;Utilities for code performance profiling.&#34;&#34;&#34;
+import argparse
+import pstats
 
 
-def walk_dict(d, depth=0):
-    &#34;&#34;&#34;Walk a Dictionary.&#34;&#34;&#34;
-    for k, v in sorted(d.items(), key=lambda x: x[0]):
-        spaces = (&#34;  &#34;) * depth
-        if hasattr(v, &#34;items&#34;):
-            print(spaces + (&#34;%s&#34; % k))
-            walk_dict(v, depth + 1)
-        else:
-            print(spaces + &#34;%s %s&#34; % (k, v))
+def default_stats(profile_location):
+    &#34;&#34;&#34;
+    Print the result of code profling.
+
+    See https://docs.python.org/2/library/profile.html
+    
+    Parameters
+    ----------
+    profile_location : str
+        The path to a profile file.
+
+    Returns
+    -------
+    None
+
+    &#34;&#34;&#34;
+    if os.path.isfile(profile_location):
+        p = pstats.Stats(profile_location)
+        # p.strip_dirs().sort_stats(-1).print_stats()
+
+        print(&#34;Biggest cumulative users&#34;)
+        p.sort_stats(&#34;cumulative&#34;).print_stats(20)
+
+        print(&#34;Biggest time users&#34;)
+        p.sort_stats(&#34;time&#34;).print_stats(20)
+
+        # p.sort_stats(&#39;time&#39;, &#39;cumulative&#39;).print_stats(.5, &#39;init&#39;)
+        # p.print_callers(.5, &#39;init&#39;)
+
+    else:
+        raise FileNotFoundError(
+            &#34;{} does not exist&#34;.format(profile_location)
+            + &#34;You can create profile.out by running:&#34;
+            + &#34;python -m cProfile -o &lt;profile_location&gt; &lt;filename&gt;&#34;
+        )
 
 
-def print_attrs(d, depth=0):
-    &#34;&#34;&#34;Walk through attributes and print them.&#34;&#34;&#34;
-    for k, v in sorted(d.items(), key=lambda x: x[0]):
-        spaces = (&#34;  &#34;) * depth
-        spaces2 = (&#34;  &#34;) * (depth + 1)
-        if len(v.attrs) != 0:
-            print(&#34;{}{} has attrs:&#34;.format(spaces, k))
-            for key, val in v.attrs.items():
-                print(&#34;{}{} {}&#34;.format(spaces2, key, val))
-        if hasattr(v, &#34;items&#34;):
-            print(spaces + (&#34;%s&#34; % k))
-            print_attrs(v, depth=depth + 1)
+def main():
+    parser = argparse.ArgumentParser(&#34;Command line interface&#34;)
+    parser.add_argument(
+        &#34;profile_location&#34;, type=str, help=&#34;location of the profile file&#34;
+    )
+    parsed, unparsed = parser.parse_known_args()
+
+    if len(unparsed) &gt; 0:
+        raise ValueError(&#34;Unrecognised command line arguments&#34;)
+
+    default_stats(parser.profile_location)
 
 
-def print_h5(file_location):
-    &#34;&#34;&#34;Print a summary of a h5 file.&#34;&#34;&#34;
-    import h5py
-
-    with h5py.File(file_location, &#34;r&#34;, libver=&#34;latest&#34;) as f:
-        print(&#34;--------AVAILABLE METADATA--------&#34;)
-        for key, val in f.attrs.items():
-            print(key, val)
-        print_attrs(f)
-        print(&#34;\n--------AVAILABLE INFO--------&#34;)
-        walk_dict(f)
-        print()</code></pre>
+if __name__ == &#34;__main__&#34;:
+    main()</code></pre>
 </details>
 </section>
 <section>
@@ -82,70 +93,83 @@ def print_h5(file_location):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="skm_pyutils.py_print.print_attrs"><code class="name flex">
-<span>def <span class="ident">print_attrs</span></span>(<span>d, depth=0)</span>
+<dt id="skm_pyutils.py_profile.default_stats"><code class="name flex">
+<span>def <span class="ident">default_stats</span></span>(<span>profile_location)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Walk through attributes and print them.</p></div>
+<div class="desc"><p>Print the result of code profling.</p>
+<p>See <a href="https://docs.python.org/2/library/profile.html">https://docs.python.org/2/library/profile.html</a></p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>profile_location</code></strong> :&ensp;<code>str</code></dt>
+<dd>The path to a profile file.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>None</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def print_attrs(d, depth=0):
-    &#34;&#34;&#34;Walk through attributes and print them.&#34;&#34;&#34;
-    for k, v in sorted(d.items(), key=lambda x: x[0]):
-        spaces = (&#34;  &#34;) * depth
-        spaces2 = (&#34;  &#34;) * (depth + 1)
-        if len(v.attrs) != 0:
-            print(&#34;{}{} has attrs:&#34;.format(spaces, k))
-            for key, val in v.attrs.items():
-                print(&#34;{}{} {}&#34;.format(spaces2, key, val))
-        if hasattr(v, &#34;items&#34;):
-            print(spaces + (&#34;%s&#34; % k))
-            print_attrs(v, depth=depth + 1)</code></pre>
-</details>
-</dd>
-<dt id="skm_pyutils.py_print.print_h5"><code class="name flex">
-<span>def <span class="ident">print_h5</span></span>(<span>file_location)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Print a summary of a h5 file.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def print_h5(file_location):
-    &#34;&#34;&#34;Print a summary of a h5 file.&#34;&#34;&#34;
-    import h5py
+<pre><code class="python">def default_stats(profile_location):
+    &#34;&#34;&#34;
+    Print the result of code profling.
 
-    with h5py.File(file_location, &#34;r&#34;, libver=&#34;latest&#34;) as f:
-        print(&#34;--------AVAILABLE METADATA--------&#34;)
-        for key, val in f.attrs.items():
-            print(key, val)
-        print_attrs(f)
-        print(&#34;\n--------AVAILABLE INFO--------&#34;)
-        walk_dict(f)
-        print()</code></pre>
+    See https://docs.python.org/2/library/profile.html
+    
+    Parameters
+    ----------
+    profile_location : str
+        The path to a profile file.
+
+    Returns
+    -------
+    None
+
+    &#34;&#34;&#34;
+    if os.path.isfile(profile_location):
+        p = pstats.Stats(profile_location)
+        # p.strip_dirs().sort_stats(-1).print_stats()
+
+        print(&#34;Biggest cumulative users&#34;)
+        p.sort_stats(&#34;cumulative&#34;).print_stats(20)
+
+        print(&#34;Biggest time users&#34;)
+        p.sort_stats(&#34;time&#34;).print_stats(20)
+
+        # p.sort_stats(&#39;time&#39;, &#39;cumulative&#39;).print_stats(.5, &#39;init&#39;)
+        # p.print_callers(.5, &#39;init&#39;)
+
+    else:
+        raise FileNotFoundError(
+            &#34;{} does not exist&#34;.format(profile_location)
+            + &#34;You can create profile.out by running:&#34;
+            + &#34;python -m cProfile -o &lt;profile_location&gt; &lt;filename&gt;&#34;
+        )</code></pre>
 </details>
 </dd>
-<dt id="skm_pyutils.py_print.walk_dict"><code class="name flex">
-<span>def <span class="ident">walk_dict</span></span>(<span>d, depth=0)</span>
+<dt id="skm_pyutils.py_profile.main"><code class="name flex">
+<span>def <span class="ident">main</span></span>(<span>)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Walk a Dictionary.</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def walk_dict(d, depth=0):
-    &#34;&#34;&#34;Walk a Dictionary.&#34;&#34;&#34;
-    for k, v in sorted(d.items(), key=lambda x: x[0]):
-        spaces = (&#34;  &#34;) * depth
-        if hasattr(v, &#34;items&#34;):
-            print(spaces + (&#34;%s&#34; % k))
-            walk_dict(v, depth + 1)
-        else:
-            print(spaces + &#34;%s %s&#34; % (k, v))</code></pre>
+<pre><code class="python">def main():
+    parser = argparse.ArgumentParser(&#34;Command line interface&#34;)
+    parser.add_argument(
+        &#34;profile_location&#34;, type=str, help=&#34;location of the profile file&#34;
+    )
+    parsed, unparsed = parser.parse_known_args()
+
+    if len(unparsed) &gt; 0:
+        raise ValueError(&#34;Unrecognised command line arguments&#34;)
+
+    default_stats(parser.profile_location)</code></pre>
 </details>
 </dd>
 </dl>
@@ -166,9 +190,8 @@ def print_h5(file_location):
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="skm_pyutils.py_print.print_attrs" href="#skm_pyutils.py_print.print_attrs">print_attrs</a></code></li>
-<li><code><a title="skm_pyutils.py_print.print_h5" href="#skm_pyutils.py_print.print_h5">print_h5</a></code></li>
-<li><code><a title="skm_pyutils.py_print.walk_dict" href="#skm_pyutils.py_print.walk_dict">walk_dict</a></code></li>
+<li><code><a title="skm_pyutils.py_profile.default_stats" href="#skm_pyutils.py_profile.default_stats">default_stats</a></code></li>
+<li><code><a title="skm_pyutils.py_profile.main" href="#skm_pyutils.py_profile.main">main</a></code></li>
 </ul>
 </li>
 </ul>

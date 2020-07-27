@@ -47,21 +47,23 @@ class GroupManager:
         print(self.group_list)
         self.info_dict = OrderedDict()
         self.index = 0
-        self.color_list = [
-            &#34;Blues&#34;, &#34;Oranges&#34;, &#34;Greens&#34;, &#34;Reds&#34;, &#34;Purples&#34;, &#34;Greys&#34;]
+        self.color_list = [&#34;Blues&#34;, &#34;Oranges&#34;, &#34;Greens&#34;, &#34;Reds&#34;, &#34;Purples&#34;, &#34;Greys&#34;]
         set_vals = sorted(set(group_list), key=group_list.index)
         print(set_vals)
         import numpy as np
+
         if len(set_vals) &gt; len(self.color_list):
             start_vals = np.arange(0.0, 2.5, 2.5 / (len(set_vals) - 0.99))
             for set_v, start_v in zip(set_vals, start_vals):
                 self.info_dict[set_v] = ColorManager(
-                    group_list.count(set_v), &#34;sns_helix&#34;, start=start_v)
+                    group_list.count(set_v), &#34;sns_helix&#34;, start=start_v
+                )
         else:
-            start_vals = self.color_list[:len(set_vals)]
+            start_vals = self.color_list[: len(set_vals)]
             for set_v, start_v in zip(set_vals, start_vals):
                 self.info_dict[set_v] = ColorManager(
-                    group_list.count(set_v), &#34;sns&#34;, sns_style=start_v)
+                    group_list.count(set_v), &#34;sns&#34;, sns_style=start_v
+                )
         print(self.info_dict)
 
     def get_next_color(self):
@@ -77,13 +79,12 @@ class GroupManager:
     def test_plot(self):
         from scipy.stats import norm
         import numpy as np
+
         fig, ax = plt.subplots()
         x_axis = np.arange(-15, 5, 0.001)
         std_devs = np.arange(0.8, 3, 2.20 / len(self.group_list))
         for sd in std_devs:
-            ax.plot(
-                x_axis, norm.pdf(x_axis, -sd * 2, sd),
-                color=self.get_next_color())
+            ax.plot(x_axis, norm.pdf(x_axis, -sd * 2, sd), color=self.get_next_color())
         sns.despine(top=True, bottom=True, right=True, left=True)
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -102,8 +103,7 @@ class ColorManager:
             start = kwargs.get(&#34;start&#34;, 0)
             self.create_sns_helix(start)
         else:
-            raise ValueError(&#34;{} not recognised method&#34;.format(
-                method))
+            raise ValueError(&#34;{} not recognised method&#34;.format(method))
         self.idx = 0
 
     def create_rgb(self):
@@ -129,13 +129,12 @@ class ColorManager:
     def test_plot(self):
         from scipy.stats import norm
         import numpy as np
+
         fig, ax = plt.subplots()
         x_axis = np.arange(-15, 5, 0.001)
         std_devs = np.arange(0.8, 3, 2.20 / self.num_colors)
         for sd in std_devs:
-            ax.plot(
-                x_axis, norm.pdf(x_axis, -sd * 2, sd),
-                color=self.get_next_color())
+            ax.plot(x_axis, norm.pdf(x_axis, -sd * 2, sd), color=self.get_next_color())
         sns.despine(top=True, bottom=True, right=True, left=True)
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -152,11 +151,16 @@ class GridFig:
     &#34;&#34;&#34;Handles gridded figures.&#34;&#34;&#34;
 
     def __init__(
-            self, rows, cols=4,
-            size_multiplier_x=5, size_multiplier_y=5,
-            wspace=0.3, hspace=0.3,
-            tight_layout=False,
-            traverse_rows=True):
+        self,
+        rows,
+        cols=4,
+        size_multiplier_x=5,
+        size_multiplier_y=5,
+        wspace=0.3,
+        hspace=0.3,
+        tight_layout=False,
+        traverse_rows=True,
+    ):
         &#34;&#34;&#34;
         Set up the grid specifications.
 
@@ -164,9 +168,9 @@ class GridFig:
 
         &#34;&#34;&#34;
         self.fig = plt.figure(
-            figsize=(cols * size_multiplier_x,
-                     rows * size_multiplier_y),
-            tight_layout=tight_layout)
+            figsize=(cols * size_multiplier_x, rows * size_multiplier_y),
+            tight_layout=tight_layout,
+        )
         self.gs = gridspec.GridSpec(rows, cols, wspace=wspace, hspace=hspace)
         self.idx = 0
         self.rows = rows
@@ -176,15 +180,14 @@ class GridFig:
     def get_ax(self, row_idx, col_idx, circular=False):
         &#34;&#34;&#34;Add subplot with standard 1x1 gs -&gt; returns ax.&#34;&#34;&#34;
         if circular:
-            ax = self.fig.add_subplot(self.gs[row_idx, col_idx], projection=&#39;polar&#39;)
+            ax = self.fig.add_subplot(self.gs[row_idx, col_idx], projection=&#34;polar&#34;)
         else:
             ax = self.fig.add_subplot(self.gs[row_idx, col_idx])
         return ax
 
     def get_multi_ax(self, row_start, row_end, col_start, col_end):
         &#34;&#34;&#34;Add subplot with custom gs sizes -&gt; returns ax.&#34;&#34;&#34;
-        ax = self.fig.add_subplot(
-            self.gs[row_start:row_end, col_start:col_end])
+        ax = self.fig.add_subplot(self.gs[row_start:row_end, col_start:col_end])
         plt.subplots_adjust(top=0.85)
         return ax
 
@@ -223,13 +226,13 @@ class GridFig:
 
         &#34;&#34;&#34;
         if self.along_rows:
-            row_idx = (self.idx // self.cols)
-            col_idx = (self.idx % self.cols)
+            row_idx = self.idx // self.cols
+            col_idx = self.idx % self.cols
 
             ax = self.get_ax(row_idx, col_idx, circular=circular)
         else:
-            row_idx = (self.idx % self.rows)
-            col_idx = (self.idx // self.rows)
+            row_idx = self.idx % self.rows
+            col_idx = self.idx // self.rows
 
             ax = self.get_ax(row_idx, col_idx, circular=circular)
         self._increment()
@@ -290,8 +293,7 @@ class GridFig:
             start = kwargs.get(&#34;start&#34;, 0)
             self.create_sns_helix(start)
         else:
-            raise ValueError(&#34;{} not recognised method&#34;.format(
-                method))
+            raise ValueError(&#34;{} not recognised method&#34;.format(method))
         self.idx = 0
 
     def create_rgb(self):
@@ -317,13 +319,12 @@ class GridFig:
     def test_plot(self):
         from scipy.stats import norm
         import numpy as np
+
         fig, ax = plt.subplots()
         x_axis = np.arange(-15, 5, 0.001)
         std_devs = np.arange(0.8, 3, 2.20 / self.num_colors)
         for sd in std_devs:
-            ax.plot(
-                x_axis, norm.pdf(x_axis, -sd * 2, sd),
-                color=self.get_next_color())
+            ax.plot(x_axis, norm.pdf(x_axis, -sd * 2, sd), color=self.get_next_color())
         sns.despine(top=True, bottom=True, right=True, left=True)
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -419,13 +420,12 @@ class GridFig:
 <pre><code class="python">def test_plot(self):
     from scipy.stats import norm
     import numpy as np
+
     fig, ax = plt.subplots()
     x_axis = np.arange(-15, 5, 0.001)
     std_devs = np.arange(0.8, 3, 2.20 / self.num_colors)
     for sd in std_devs:
-        ax.plot(
-            x_axis, norm.pdf(x_axis, -sd * 2, sd),
-            color=self.get_next_color())
+        ax.plot(x_axis, norm.pdf(x_axis, -sd * 2, sd), color=self.get_next_color())
     sns.despine(top=True, bottom=True, right=True, left=True)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
@@ -450,11 +450,16 @@ class GridFig:
     &#34;&#34;&#34;Handles gridded figures.&#34;&#34;&#34;
 
     def __init__(
-            self, rows, cols=4,
-            size_multiplier_x=5, size_multiplier_y=5,
-            wspace=0.3, hspace=0.3,
-            tight_layout=False,
-            traverse_rows=True):
+        self,
+        rows,
+        cols=4,
+        size_multiplier_x=5,
+        size_multiplier_y=5,
+        wspace=0.3,
+        hspace=0.3,
+        tight_layout=False,
+        traverse_rows=True,
+    ):
         &#34;&#34;&#34;
         Set up the grid specifications.
 
@@ -462,9 +467,9 @@ class GridFig:
 
         &#34;&#34;&#34;
         self.fig = plt.figure(
-            figsize=(cols * size_multiplier_x,
-                     rows * size_multiplier_y),
-            tight_layout=tight_layout)
+            figsize=(cols * size_multiplier_x, rows * size_multiplier_y),
+            tight_layout=tight_layout,
+        )
         self.gs = gridspec.GridSpec(rows, cols, wspace=wspace, hspace=hspace)
         self.idx = 0
         self.rows = rows
@@ -474,15 +479,14 @@ class GridFig:
     def get_ax(self, row_idx, col_idx, circular=False):
         &#34;&#34;&#34;Add subplot with standard 1x1 gs -&gt; returns ax.&#34;&#34;&#34;
         if circular:
-            ax = self.fig.add_subplot(self.gs[row_idx, col_idx], projection=&#39;polar&#39;)
+            ax = self.fig.add_subplot(self.gs[row_idx, col_idx], projection=&#34;polar&#34;)
         else:
             ax = self.fig.add_subplot(self.gs[row_idx, col_idx])
         return ax
 
     def get_multi_ax(self, row_start, row_end, col_start, col_end):
         &#34;&#34;&#34;Add subplot with custom gs sizes -&gt; returns ax.&#34;&#34;&#34;
-        ax = self.fig.add_subplot(
-            self.gs[row_start:row_end, col_start:col_end])
+        ax = self.fig.add_subplot(self.gs[row_start:row_end, col_start:col_end])
         plt.subplots_adjust(top=0.85)
         return ax
 
@@ -521,13 +525,13 @@ class GridFig:
 
         &#34;&#34;&#34;
         if self.along_rows:
-            row_idx = (self.idx // self.cols)
-            col_idx = (self.idx % self.cols)
+            row_idx = self.idx // self.cols
+            col_idx = self.idx % self.cols
 
             ax = self.get_ax(row_idx, col_idx, circular=circular)
         else:
-            row_idx = (self.idx % self.rows)
-            col_idx = (self.idx // self.rows)
+            row_idx = self.idx % self.rows
+            col_idx = self.idx // self.rows
 
             ax = self.get_ax(row_idx, col_idx, circular=circular)
         self._increment()
@@ -570,7 +574,7 @@ class GridFig:
 <pre><code class="python">def get_ax(self, row_idx, col_idx, circular=False):
     &#34;&#34;&#34;Add subplot with standard 1x1 gs -&gt; returns ax.&#34;&#34;&#34;
     if circular:
-        ax = self.fig.add_subplot(self.gs[row_idx, col_idx], projection=&#39;polar&#39;)
+        ax = self.fig.add_subplot(self.gs[row_idx, col_idx], projection=&#34;polar&#34;)
     else:
         ax = self.fig.add_subplot(self.gs[row_idx, col_idx])
     return ax</code></pre>
@@ -601,8 +605,7 @@ class GridFig:
 </summary>
 <pre><code class="python">def get_multi_ax(self, row_start, row_end, col_start, col_end):
     &#34;&#34;&#34;Add subplot with custom gs sizes -&gt; returns ax.&#34;&#34;&#34;
-    ax = self.fig.add_subplot(
-        self.gs[row_start:row_end, col_start:col_end])
+    ax = self.fig.add_subplot(self.gs[row_start:row_end, col_start:col_end])
     plt.subplots_adjust(top=0.85)
     return ax</code></pre>
 </details>
@@ -658,13 +661,13 @@ class GridFig:
 
     &#34;&#34;&#34;
     if self.along_rows:
-        row_idx = (self.idx // self.cols)
-        col_idx = (self.idx % self.cols)
+        row_idx = self.idx // self.cols
+        col_idx = self.idx % self.cols
 
         ax = self.get_ax(row_idx, col_idx, circular=circular)
     else:
-        row_idx = (self.idx % self.rows)
-        col_idx = (self.idx // self.rows)
+        row_idx = self.idx % self.rows
+        col_idx = self.idx // self.rows
 
         ax = self.get_ax(row_idx, col_idx, circular=circular)
     self._increment()
@@ -767,21 +770,23 @@ class GridFig:
         print(self.group_list)
         self.info_dict = OrderedDict()
         self.index = 0
-        self.color_list = [
-            &#34;Blues&#34;, &#34;Oranges&#34;, &#34;Greens&#34;, &#34;Reds&#34;, &#34;Purples&#34;, &#34;Greys&#34;]
+        self.color_list = [&#34;Blues&#34;, &#34;Oranges&#34;, &#34;Greens&#34;, &#34;Reds&#34;, &#34;Purples&#34;, &#34;Greys&#34;]
         set_vals = sorted(set(group_list), key=group_list.index)
         print(set_vals)
         import numpy as np
+
         if len(set_vals) &gt; len(self.color_list):
             start_vals = np.arange(0.0, 2.5, 2.5 / (len(set_vals) - 0.99))
             for set_v, start_v in zip(set_vals, start_vals):
                 self.info_dict[set_v] = ColorManager(
-                    group_list.count(set_v), &#34;sns_helix&#34;, start=start_v)
+                    group_list.count(set_v), &#34;sns_helix&#34;, start=start_v
+                )
         else:
-            start_vals = self.color_list[:len(set_vals)]
+            start_vals = self.color_list[: len(set_vals)]
             for set_v, start_v in zip(set_vals, start_vals):
                 self.info_dict[set_v] = ColorManager(
-                    group_list.count(set_v), &#34;sns&#34;, sns_style=start_v)
+                    group_list.count(set_v), &#34;sns&#34;, sns_style=start_v
+                )
         print(self.info_dict)
 
     def get_next_color(self):
@@ -797,13 +802,12 @@ class GridFig:
     def test_plot(self):
         from scipy.stats import norm
         import numpy as np
+
         fig, ax = plt.subplots()
         x_axis = np.arange(-15, 5, 0.001)
         std_devs = np.arange(0.8, 3, 2.20 / len(self.group_list))
         for sd in std_devs:
-            ax.plot(
-                x_axis, norm.pdf(x_axis, -sd * 2, sd),
-                color=self.get_next_color())
+            ax.plot(x_axis, norm.pdf(x_axis, -sd * 2, sd), color=self.get_next_color())
         sns.despine(top=True, bottom=True, right=True, left=True)
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -838,13 +842,12 @@ class GridFig:
 <pre><code class="python">def test_plot(self):
     from scipy.stats import norm
     import numpy as np
+
     fig, ax = plt.subplots()
     x_axis = np.arange(-15, 5, 0.001)
     std_devs = np.arange(0.8, 3, 2.20 / len(self.group_list))
     for sd in std_devs:
-        ax.plot(
-            x_axis, norm.pdf(x_axis, -sd * 2, sd),
-            color=self.get_next_color())
+        ax.plot(x_axis, norm.pdf(x_axis, -sd * 2, sd), color=self.get_next_color())
     sns.despine(top=True, bottom=True, right=True, left=True)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
