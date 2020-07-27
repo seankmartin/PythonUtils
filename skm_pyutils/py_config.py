@@ -27,9 +27,8 @@ def setup_text_logging(in_dir, bname="logfile.log", append=False):
     fname = os.path.join(in_dir, bname)
     if not append:
         if os.path.isfile(fname):
-            open(fname, 'w').close()
-    logging.basicConfig(
-        filename=fname, level=logging.DEBUG)
+            open(fname, "w").close()
+    logging.basicConfig(filename=fname, level=logging.DEBUG)
     mpl_logger = logging.getLogger("matplotlib")
     mpl_logger.setLevel(level=logging.WARNING)
 
@@ -105,8 +104,8 @@ def parse_args(parser, verbose=True):
 
     if len(unparsed) != 0:
         raise ValueError(
-            "Unrecognised command line arguments passed {}".format(
-                unparsed))
+            "Unrecognised command line arguments passed {}".format(unparsed)
+        )
 
     if verbose:
         if len(sys.argv) > 1:
@@ -161,7 +160,7 @@ def read_python(path):
     path = os.path.realpath(os.path.expanduser(path))
     if not os.path.exists(path):
         raise ValueError("{} does not exist to read".format(path))
-    with open(path, 'r') as f:
+    with open(path, "r") as f:
         contents = f.read()
     contents = contents.replace("__dirname__", os.path.abspath(os.path.dirname(path)))
     metadata = {}

@@ -47,8 +47,7 @@ def save_mixed_dict_to_csv(in_dict, out_dir, out_name="results.csv"):
             elif isinstance(val, list):
                 out_str = arr_to_str(key, val)
             else:
-                raise ValueError("Unrecognised type {} quitting".format(
-                    type(val)))
+                raise ValueError("Unrecognised type {} quitting".format(type(val)))
             f.write(out_str + "\n")
 
 
@@ -93,7 +92,7 @@ def save_dicts_to_csv(filename, in_dicts):
     try:
         print("Saving summary data to {}".format(filename))
         make_path_if_not_exists(filename)
-        with open(filename, 'w', newline='') as csvfile:
+        with open(filename, "w", newline="") as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=max_key)
             writer.writerow(dict(zip(max_key, max_key_friendly)))
             for in_dict in in_dicts:

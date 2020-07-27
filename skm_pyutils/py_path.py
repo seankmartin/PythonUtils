@@ -38,15 +38,20 @@ def has_ext(filename, ext, case_sensitive_ext=False):
     if ext[0] != ".":
         ext = "." + ext
     if case_sensitive_ext:
-        return filename[-len(ext):] == ext
+        return filename[-len(ext) :] == ext
     else:
-        return filename[-len(ext):].lower() == ext.lower()
+        return filename[-len(ext) :].lower() == ext.lower()
 
 
 def get_all_files_in_dir(
-        in_dir, ext=None, return_absolute=True,
-        recursive=False, verbose=False, re_filter=None,
-        case_sensitive_ext=False):
+    in_dir,
+    ext=None,
+    return_absolute=True,
+    recursive=False,
+    verbose=False,
+    re_filter=None,
+    case_sensitive_ext=False,
+):
     """
     Get all files in the directory with the given extensions.
 
@@ -84,8 +89,10 @@ def get_all_files_in_dir(
 
     def ok_file(root_dir, f):
         return (
-            has_ext(f, ext, case_sensitive_ext=case_sensitive_ext) and
-            os.path.isfile(os.path.join(root_dir, f)) and match_filter(f))
+            has_ext(f, ext, case_sensitive_ext=case_sensitive_ext)
+            and os.path.isfile(os.path.join(root_dir, f))
+            and match_filter(f)
+        )
 
     def convert_to_path(root_dir, f):
         return os.path.join(root_dir, f) if return_absolute else f
@@ -96,15 +103,15 @@ def get_all_files_in_dir(
     if recursive:
         onlyfiles = []
         for root, _, filenames in os.walk(in_dir):
-            start_root = root[:len(in_dir)]
+            start_root = root[: len(in_dir)]
 
             if len(root) == len(start_root):
                 end_root = ""
             else:
                 if in_dir.endswith(os.sep):
-                    end_root = root[len(in_dir):]
+                    end_root = root[len(in_dir) :]
                 else:
-                    end_root = root[len(in_dir + os.sep):]
+                    end_root = root[len(in_dir + os.sep) :]
             for filename in filenames:
                 filename = os.path.join(end_root, filename)
                 if ok_file(start_root, filename):
@@ -115,7 +122,8 @@ def get_all_files_in_dir(
 
     else:
         onlyfiles = [
-            convert_to_path(in_dir, f) for f in sorted(os.listdir(in_dir))
+            convert_to_path(in_dir, f)
+            for f in sorted(os.listdir(in_dir))
             if ok_file(in_dir, f)
         ]
         if verbose:
@@ -159,15 +167,15 @@ def get_dirs_matching_regex(start_dir, re_filters=None, return_absolute=True):
 
     dirs = []
     for root, _, _ in os.walk(start_dir):
-        start_root = root[:len(start_dir)]
+        start_root = root[: len(start_dir)]
 
         if len(root) == len(start_root):
             end_root = ""
         else:
             if start_dir.endswith(os.sep):
-                end_root = root[len(start_dir):]
+                end_root = root[len(start_dir) :]
             else:
-                end_root = root[len(start_dir + os.sep):]
+                end_root = root[len(start_dir + os.sep) :]
 
         if match_filter(end_root):
             to_add = root if return_absolute else end_root
