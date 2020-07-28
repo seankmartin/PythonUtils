@@ -13,8 +13,8 @@ DISTNAME = "skm_pyutils"
 MAINTAINER = "Sean Martin"
 MAINTAINER_EMAIL = "martins7@tcd.ie"
 URL = "https://github.com/seankmartin/PythonUtils"
-DOWNLOAD_URL = "https://github.com/seankmartin/PythonUtils/archive/0.1.1.tar.gz"
-VERSION = "0.1.1"
+DOWNLOAD_URL = "https://github.com/seankmartin/PythonUtils/archive/0.1.2.tar.gz"
+VERSION = "0.1.2"
 
 INSTALL_REQUIRES = ["numpy", "matplotlib", "seaborn"]
 
