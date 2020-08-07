@@ -75,11 +75,11 @@ def save_dicts_to_csv(filename, in_dicts):
     # first, find the dict with the most keys
     if len(in_dicts) == 0:
         return
-    max_key = in_dicts[0].keys()
+    max_key = list(in_dicts[0].keys())
     for in_dict in in_dicts:
         names = in_dict.keys()
         if len(names) > len(max_key):
-            max_key = names
+            max_key = list(names)
 
     # Then append other keys if still missing keys
     for in_dict in in_dicts:
