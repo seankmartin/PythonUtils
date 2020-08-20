@@ -51,7 +51,7 @@ def save_mixed_dict_to_csv(in_dict, out_dir, out_name="results.csv"):
             f.write(out_str + "\n")
 
 
-def save_dicts_to_csv(filename, in_dicts):
+def save_dicts_to_csv(filename, in_dicts, do_sort=True):
     """
     Save a list of dictionaries to a csv, cols=vals, rows=dicts.
 
@@ -66,6 +66,8 @@ def save_dicts_to_csv(filename, in_dicts):
         The name of the csv file to save results to.
     in_dicts : List
         A list of dictionaries to save to csv.
+    do_sort : bool, optional
+        Whether to sort the keys after appending, by default True.
 
     Returns
     -------
@@ -82,11 +84,15 @@ def save_dicts_to_csv(filename, in_dicts):
             max_key = list(names)
 
     # Then append other keys if still missing keys
+    did_append = False
     for in_dict in in_dicts:
         names = in_dict.keys()
         for name in names:
             if name not in max_key:
+                did_append = True
                 max_key.append(name)
+    if did_append and do_sort:
+        max_key = sorted(max_key)
     max_key_friendly = [k.replace(" ", "_") for k in max_key]
 
     try:
