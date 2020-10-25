@@ -157,12 +157,17 @@ def read_python(path):
         The scripts global scope variables stored in a dictionary.
 
     """
+    def normalise_path(pth):
+        s = os.path.abspath(pth)
+        s = s.replace(os.sep, "/")
+        return s
+
     path = os.path.realpath(os.path.expanduser(path))
     if not os.path.exists(path):
         raise ValueError("{} does not exist to read".format(path))
     with open(path, "r") as f:
         contents = f.read()
-    contents = contents.replace("__dirname__", os.path.abspath(os.path.dirname(path)))
+    contents = contents.replace("__dirname__", normalise_path(os.path.dirname(path)))
     metadata = {}
     exec(contents, {}, metadata)
     metadata = {k.lower(): v for (k, v) in metadata.items()}
