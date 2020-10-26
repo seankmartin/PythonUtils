@@ -160,7 +160,7 @@ def get_dirs_matching_regex(start_dir, re_filters=None, return_absolute=True):
         if re_filters is None:
             return True
         for re_filter in re_filters:
-            search_res = re.search(re_filter, f)
+            search_res = re.search(re_filter, f.replace(os.sep, "/"))
             if search_res is None:
                 return False
         return True
