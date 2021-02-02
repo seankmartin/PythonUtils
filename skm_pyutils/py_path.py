@@ -1,6 +1,7 @@
 """Path related utility functions."""
 import os
 import re
+from collections import OrderedDict
 
 
 def make_path_if_not_exists(fname):
@@ -143,9 +144,9 @@ def get_dirs_matching_regex(start_dir, re_filters=None, return_absolute=True):
     ----------
     start_dir : str
         The path to the directory to start at.
-    re_filter : str, optional. Defaults to None.
-        The regular expression to match.
-        Returns all directories is passed as None.
+    re_filter : list of str, optional. Defaults to None.
+        The list of regular expressions to match.
+        Returns all directories if passed as None.
 
     Returns
     -------
@@ -181,3 +182,72 @@ def get_dirs_matching_regex(start_dir, re_filters=None, return_absolute=True):
             to_add = root if return_absolute else end_root
             dirs.append(to_add)
     return dirs
+
+
+def get_base_dir_to_files(
+    filenames, start_dir, ext=None, re_filter=None, print_info=True
+):
+    """
+    Get the base directory of a set of filenames.
+
+    If multiple matches are found, returns all matching filenames.
+
+    Parameters
+    ----------
+    filenames : list of str
+        The filenames to search for.
+    start_dir : str
+        Where to start the search.
+    ext : str, optional
+        The extension of the filenames, by default None.
+    re_filter : str, optional. 
+        A regex to use to find files, by defaults None.
+    print_info : bool, optional
+        Whether to print info of the search, by default True.
+
+    Returns
+    -------
+    OrderedDict
+        Dictionary of matching file base paths.
+    set
+        A set of files with no matches
+    set
+        A set of files with multiple matches
+    """
+    filenames = list(filenames)
+    files_to_check = get_all_files_in_dir(
+        start_dir, ext=ext, re_filter=re_filter, recursive=True
+    )
+    found_dict = OrderedDict()
+
+    for f in files_to_check:
+        base = os.path.basename(f)
+        dirs = os.path.dirname(f)
+        if base in filenames:
+            if base not in found_dict.keys():
+                found_dict[base] = []
+            found_dict[base].append(dirs)
+
+    no_match = []
+    multi_match = []
+    found = list(found_dict.keys())
+    num_found = 0
+    for v in filenames:
+        if v not in found:
+            no_match.append(v)
+        else:
+            num_found += 1
+            if len(found_dict[v]) > 1:
+                multi_match.append(v)
+
+    found_dict = OrderedDict(
+        sorted(found_dict.items(), key=lambda x: filenames.index(x[0]))
+    )
+
+    if print_info:
+        to_print = "Found {} files out of {}, {} have multiple matches".format(
+            num_found, len(filenames), len(multi_match)
+        )
+        print(to_print)
+
+    return found_dict, set(no_match), set(multi_match)
