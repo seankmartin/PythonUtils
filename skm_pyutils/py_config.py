@@ -157,6 +157,7 @@ def read_python(path):
         The scripts global scope variables stored in a dictionary.
 
     """
+
     def normalise_path(pth):
         s = os.path.abspath(pth)
         s = s.replace(os.sep, "/")
