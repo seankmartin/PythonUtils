@@ -246,7 +246,7 @@ def get_base_dir_to_files(
 
     if print_info:
         to_print = "Found {} files out of {}, {} have multiple matches".format(
-            num_found, len(filenames), len(multi_match)
+            num_found, len(filenames), len(set(multi_match))
         )
         print(to_print)
 
