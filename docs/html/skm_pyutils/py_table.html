@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.8.1" />
-<title>skm_pyutils.py_profile API documentation</title>
-<meta name="description" content="Utilities for code performance profiling." />
+<title>skm_pyutils.py_table API documentation</title>
+<meta name="description" content="" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -17,72 +17,22 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>skm_pyutils.py_profile</code></h1>
+<h1 class="title">Module <code>skm_pyutils.py_table</code></h1>
 </header>
 <section id="section-intro">
-<p>Utilities for code performance profiling.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34;Utilities for code performance profiling.&#34;&#34;&#34;
-import os
-import argparse
-import pstats
+<pre><code class="python">import pandas as pd
 
 
-def default_stats(profile_location):
-    &#34;&#34;&#34;
-    Print the result of code profling.
-
-    See https://docs.python.org/2/library/profile.html
-    
-    Parameters
-    ----------
-    profile_location : str
-        The path to a profile file.
-
-    Returns
-    -------
-    None
-
-    &#34;&#34;&#34;
-    if os.path.isfile(profile_location):
-        p = pstats.Stats(profile_location)
-        # p.strip_dirs().sort_stats(-1).print_stats()
-
-        print(&#34;Biggest cumulative users&#34;)
-        p.sort_stats(&#34;cumulative&#34;).print_stats(20)
-
-        print(&#34;Biggest time users&#34;)
-        p.sort_stats(&#34;time&#34;).print_stats(20)
-
-        # p.sort_stats(&#39;time&#39;, &#39;cumulative&#39;).print_stats(.5, &#39;init&#39;)
-        # p.print_callers(.5, &#39;init&#39;)
-
-    else:
-        raise FileNotFoundError(
-            &#34;{} does not exist&#34;.format(profile_location)
-            + &#34;You can create profile.out by running:&#34;
-            + &#34;python -m cProfile -o &lt;profile_location&gt; &lt;filename&gt;&#34;
-        )
-
-
-def main():
-    parser = argparse.ArgumentParser(&#34;Command line interface&#34;)
-    parser.add_argument(
-        &#34;profile_location&#34;, type=str, help=&#34;location of the profile file&#34;
-    )
-    parsed, unparsed = parser.parse_known_args()
-
-    if len(unparsed) &gt; 0:
-        raise ValueError(&#34;Unrecognised command line arguments&#34;)
-
-    default_stats(parser.profile_location)
-
-
-if __name__ == &#34;__main__&#34;:
-    main()</code></pre>
+def list_to_df(in_list, headers=None):
+    &#34;&#34;&#34;Convert a list to a dataframe with the given headers.&#34;&#34;&#34;
+    if headers is None:
+        headers = [&#34;V{}&#34;.format(i) for i in range(len(in_list[0]))]
+    results_df = pd.DataFrame.from_records(in_list, columns=headers)
+    return results_df</code></pre>
 </details>
 </section>
 <section>
@@ -92,83 +42,21 @@ if __name__ == &#34;__main__&#34;:
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="skm_pyutils.py_profile.default_stats"><code class="name flex">
-<span>def <span class="ident">default_stats</span></span>(<span>profile_location)</span>
+<dt id="skm_pyutils.py_table.list_to_df"><code class="name flex">
+<span>def <span class="ident">list_to_df</span></span>(<span>in_list, headers=None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Print the result of code profling.</p>
-<p>See <a href="https://docs.python.org/2/library/profile.html">https://docs.python.org/2/library/profile.html</a></p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>profile_location</code></strong> :&ensp;<code>str</code></dt>
-<dd>The path to a profile file.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>None</code></dt>
-<dd>&nbsp;</dd>
-</dl></div>
+<div class="desc"><p>Convert a list to a dataframe with the given headers.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def default_stats(profile_location):
-    &#34;&#34;&#34;
-    Print the result of code profling.
-
-    See https://docs.python.org/2/library/profile.html
-    
-    Parameters
-    ----------
-    profile_location : str
-        The path to a profile file.
-
-    Returns
-    -------
-    None
-
-    &#34;&#34;&#34;
-    if os.path.isfile(profile_location):
-        p = pstats.Stats(profile_location)
-        # p.strip_dirs().sort_stats(-1).print_stats()
-
-        print(&#34;Biggest cumulative users&#34;)
-        p.sort_stats(&#34;cumulative&#34;).print_stats(20)
-
-        print(&#34;Biggest time users&#34;)
-        p.sort_stats(&#34;time&#34;).print_stats(20)
-
-        # p.sort_stats(&#39;time&#39;, &#39;cumulative&#39;).print_stats(.5, &#39;init&#39;)
-        # p.print_callers(.5, &#39;init&#39;)
-
-    else:
-        raise FileNotFoundError(
-            &#34;{} does not exist&#34;.format(profile_location)
-            + &#34;You can create profile.out by running:&#34;
-            + &#34;python -m cProfile -o &lt;profile_location&gt; &lt;filename&gt;&#34;
-        )</code></pre>
-</details>
-</dd>
-<dt id="skm_pyutils.py_profile.main"><code class="name flex">
-<span>def <span class="ident">main</span></span>(<span>)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def main():
-    parser = argparse.ArgumentParser(&#34;Command line interface&#34;)
-    parser.add_argument(
-        &#34;profile_location&#34;, type=str, help=&#34;location of the profile file&#34;
-    )
-    parsed, unparsed = parser.parse_known_args()
-
-    if len(unparsed) &gt; 0:
-        raise ValueError(&#34;Unrecognised command line arguments&#34;)
-
-    default_stats(parser.profile_location)</code></pre>
+<pre><code class="python">def list_to_df(in_list, headers=None):
+    &#34;&#34;&#34;Convert a list to a dataframe with the given headers.&#34;&#34;&#34;
+    if headers is None:
+        headers = [&#34;V{}&#34;.format(i) for i in range(len(in_list[0]))]
+    results_df = pd.DataFrame.from_records(in_list, columns=headers)
+    return results_df</code></pre>
 </details>
 </dd>
 </dl>
@@ -189,8 +77,7 @@ if __name__ == &#34;__main__&#34;:
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="skm_pyutils.py_profile.default_stats" href="#skm_pyutils.py_profile.default_stats">default_stats</a></code></li>
-<li><code><a title="skm_pyutils.py_profile.main" href="#skm_pyutils.py_profile.main">main</a></code></li>
+<li><code><a title="skm_pyutils.py_table.list_to_df" href="#skm_pyutils.py_table.list_to_df">list_to_df</a></code></li>
 </ul>
 </li>
 </ul>

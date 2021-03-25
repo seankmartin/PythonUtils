@@ -8,7 +8,10 @@ Documentation available at https://seankmartin.github.io/PythonUtils/html/skm_py
 
 ## Installation
 
-pip install skm_pyutils
+`pip install skm_pyutils`
+
+## Update documentation
+`pdoc --html -o "docs\html" skm_pyutils --force`
 
 ## Command line running
 ```
