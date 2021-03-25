@@ -96,7 +96,7 @@ def get_all_files_in_dir(
         )
 
     def convert_to_path(root_dir, f):
-        return os.path.join(root_dir, f) if return_absolute else f
+        return os.path.abspath(os.path.join(root_dir, f)) if return_absolute else f
 
     if verbose:
         print("Adding following files from {}".format(in_dir))

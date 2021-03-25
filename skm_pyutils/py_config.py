@@ -4,7 +4,6 @@ import sys
 import logging
 import configparser
 from pprint import pprint
-import argparse
 
 
 def setup_text_logging(in_dir, bname="logfile.log", append=False):

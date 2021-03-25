@@ -16,7 +16,7 @@ URL = "https://github.com/seankmartin/PythonUtils"
 DOWNLOAD_URL = "https://github.com/seankmartin/PythonUtils/archive/0.1.3.tar.gz"
 VERSION = "0.1.3"
 
-INSTALL_REQUIRES = ["numpy", "matplotlib", "seaborn"]
+INSTALL_REQUIRES = ["numpy", "matplotlib", "seaborn", "PyPDF2"]
 
 PACKAGES = ["skm_pyutils"]
 
@@ -32,6 +32,12 @@ CLASSIFIERS = [
     "Operating System :: Microsoft :: Windows",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
 ]
+
+ENTRY_POINTS = {
+    "console_scripts": [
+        "pdf-merge = skm_pyutils.py_pdf:cli_entry"
+    ]
+}
 
 try:
     from setuptools import setup
@@ -58,4 +64,5 @@ if __name__ == "__main__":
         include_package_data=True,
         packages=PACKAGES,
         classifiers=CLASSIFIERS,
+        entry_points=ENTRY_POINTS,
     )
