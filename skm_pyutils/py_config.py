@@ -6,32 +6,6 @@ import configparser
 from pprint import pprint
 
 
-def setup_text_logging(in_dir, bname="logfile.log", append=False):
-    """
-    Pass logging file location to logging.
-
-    Parameters
-    ----------
-    in_dir : str
-        Directory to save log file to.
-    bname : str, optional, defaults to "logfile.log"
-        The basename of the log file to save to.
-    append: bool, optional, defaults to False
-
-    Returns
-    -------
-    None
-
-    """
-    fname = os.path.join(in_dir, bname)
-    if not append:
-        if os.path.isfile(fname):
-            open(fname, "w").close()
-    logging.basicConfig(filename=fname, level=logging.DEBUG)
-    mpl_logger = logging.getLogger("matplotlib")
-    mpl_logger.setLevel(level=logging.WARNING)
-
-
 def read_cfg(location, verbose=True):
     """
     Read config file at location using ConfigParser.
@@ -112,27 +86,6 @@ def parse_args(parser, verbose=True):
     return args
 
 
-def log_exception(ex, more_info=""):
-    """
-    Log an expection and additional info.
-
-    Parameters
-    ----------
-    ex: Exception
-        The python exception that occured
-    more_info:
-        Additional string to log
-
-    Returns
-    -------
-    None
-
-    """
-    template = "{0} because exception of type {1} occurred. Arguments:\n{2!r}"
-    message = template.format(more_info, type(ex).__name__, ex.args)
-    logging.error(message)
-
-
 def read_python(path, dirname_replacement=""):
     """
     Execute a python script at path.
@@ -173,8 +126,12 @@ def read_python(path, dirname_replacement=""):
     if dirname_replacement != "":
         contents = contents.replace("__dirname__", normalise_path(dirname_replacement))
     else:
-        contents = contents.replace("__dirname__", normalise_path(os.path.dirname(path)))
-    contents = contents.replace("__thisdirname__", normalise_path(os.path.dirname(path)))
+        contents = contents.replace(
+            "__dirname__", normalise_path(os.path.dirname(path))
+        )
+    contents = contents.replace(
+        "__thisdirname__", normalise_path(os.path.dirname(path))
+    )
     metadata = {}
     exec(contents, {}, metadata)
     metadata = {k.lower(): v for (k, v) in metadata.items()}

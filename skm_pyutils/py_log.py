@@ -106,3 +106,29 @@ def get_default_log_loc(name):
     default_loc = os.path.join(os.path.expanduser("~"), ".skm_python", name)
 
     return default_loc
+
+
+def setup_text_logging(in_dir, bname="logfile.log", append=False):
+    """
+    Pass logging file location to logging.
+
+    Parameters
+    ----------
+    in_dir : str
+        Directory to save log file to.
+    bname : str, optional, defaults to "logfile.log"
+        The basename of the log file to save to.
+    append: bool, optional, defaults to False
+
+    Returns
+    -------
+    None
+
+    """
+    fname = os.path.join(in_dir, bname)
+    if not append:
+        if os.path.isfile(fname):
+            open(fname, "w").close()
+    logging.basicConfig(filename=fname, level=logging.DEBUG)
+    mpl_logger = logging.getLogger("matplotlib")
+    mpl_logger.setLevel(level=logging.WARNING)

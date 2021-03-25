@@ -6,6 +6,7 @@ from collections import OrderedDict
 
 from skm_pyutils.py_config import parse_args
 
+
 def make_path_if_not_exists(fname):
     """Make directory structure for given fname if it does not exist."""
     if os.path.dirname(fname) != "":
@@ -260,9 +261,7 @@ def cli_entry():
     parser = argparse.ArgumentParser(description="Directory list command line")
 
     parser.add_argument(
-        "directory",
-        type=str,
-        help="Directory to find files from.",
+        "directory", type=str, help="Directory to find files from.",
     )
     parser.add_argument(
         "--recursive",
@@ -280,10 +279,23 @@ def cli_entry():
     parsed = parse_args(parser, verbose=False)
 
     if os.path.exists(parsed.directory):
-        files = get_all_files_in_dir(parsed.directory, ext=parsed.extension, return_absolute=False, recursive=parsed.recursive)
-        output = parsed.output if parsed.output is not None else os.path.join(parsed.directory, "current_contents.txt")
+        files = get_all_files_in_dir(
+            parsed.directory,
+            ext=parsed.extension,
+            return_absolute=False,
+            recursive=parsed.recursive,
+        )
+        output = (
+            parsed.output
+            if parsed.output is not None
+            else os.path.join(parsed.directory, "current_contents.txt")
+        )
         with open(output, "w") as f:
             for fname in files:
                 f.write(f"{fname}\n")
     else:
         raise ValueError("Please pass a valid directory")
+
+
+if __name__ == "__main__":
+    cli_entry()

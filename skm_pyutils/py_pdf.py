@@ -107,3 +107,7 @@ def cli_entry():
         pdf_cat(parsed.item, parsed.output)
     else:
         raise ValueError("Please pass items or a valid directory")
+
+
+if __name__ == "__main__":
+    cli_entry()
