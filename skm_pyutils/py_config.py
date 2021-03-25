@@ -134,7 +134,7 @@ def log_exception(ex, more_info=""):
     logging.error(message)
 
 
-def read_python(path):
+def read_python(path, dirname_replacement=""):
     """
     Execute a python script at path.
 
@@ -150,6 +150,9 @@ def read_python(path):
     ----------
     path : string
         The location of the python script.
+    dirname_replacement : string, optional, optional, defaults to None
+        What to replace __dirname__ with.
+        By default, None will replace __dirname__ with dirname of path.
 
     Returns
     -------
@@ -168,7 +171,10 @@ def read_python(path):
         raise ValueError("{} does not exist to read".format(path))
     with open(path, "r") as f:
         contents = f.read()
-    contents = contents.replace("__dirname__", normalise_path(os.path.dirname(path)))
+    if dirname_replacement != "":
+        contents = contents.replace("__dirname__", normalise_path(dirname_replacement))
+    else:
+        contents = contents.replace("__dirname__", normalise_path(os.path.dirname(path)))
     metadata = {}
     exec(contents, {}, metadata)
     metadata = {k.lower(): v for (k, v) in metadata.items()}
