@@ -5,7 +5,7 @@ import csv
 import numpy as np
 
 from skm_pyutils.py_path import make_path_if_not_exists
-from skm_pyutils.py_config import log_exception
+from skm_pyutils.py_log import log_exception
 
 
 def arr_to_str(name, arr):
