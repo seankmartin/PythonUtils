@@ -1,3 +1,5 @@
+"""PDF file related utilities."""
+
 import os
 from datetime import datetime
 import argparse
@@ -9,6 +11,21 @@ from skm_pyutils.py_config import parse_args
 
 
 def pdf_cat(input_files, output_location):
+    """
+    Concatenate PDF files.
+
+    Parameters
+    ----------
+    input_files : list of str
+        Paths to files to concatenate.
+    output_location : str, optional
+        The path to the output merged PDF location.
+
+    Returns
+    -------
+    None
+
+    """
     if output_location is None:
         now = datetime.now()
         # current_time = now.strftime("%H-%M-%S")
@@ -25,6 +42,23 @@ def pdf_cat(input_files, output_location):
 
 
 def merge_all_pdfs_in_dir(input_dir, out_name=None, recursive=False):
+    """
+    Merge all PDFs in the given directory.
+
+    Parameters
+    ----------
+    input_dir : str
+        The path to the directory.
+    out_name : str, optional
+        The name of the output file.
+    recursive : bool, optional
+        Whether to recurse through subdirectories. Defaults to False.
+    
+    Returns
+    -------
+    None
+
+    """
     if out_name is None:
         now = datetime.now()
         # current_time = now.strftime("%H-%M-%S")
@@ -40,6 +74,7 @@ def merge_all_pdfs_in_dir(input_dir, out_name=None, recursive=False):
 
 
 def cli_entry():
+    """Command line interface entry point."""
     parser = argparse.ArgumentParser(description="PDF merger command line")
 
     parser.add_argument(

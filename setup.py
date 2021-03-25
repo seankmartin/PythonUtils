@@ -35,7 +35,8 @@ CLASSIFIERS = [
 
 ENTRY_POINTS = {
     "console_scripts": [
-        "pdf-merge = skm_pyutils.py_pdf:cli_entry"
+        "pdf-merge = skm_pyutils.py_pdf:cli_entry",
+        "dir-list = skm_pyutils.py_path:cli_entry"
     ]
 }
 

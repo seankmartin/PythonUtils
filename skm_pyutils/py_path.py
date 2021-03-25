@@ -1,8 +1,10 @@
 """Path related utility functions."""
 import os
 import re
+import argparse
 from collections import OrderedDict
 
+from skm_pyutils.py_config import parse_args
 
 def make_path_if_not_exists(fname):
     """Make directory structure for given fname if it does not exist."""
@@ -251,3 +253,37 @@ def get_base_dir_to_files(
         print(to_print)
 
     return found_dict, set(no_match), set(multi_match)
+
+
+def cli_entry():
+    """Command line interface entry point."""
+    parser = argparse.ArgumentParser(description="Directory list command line")
+
+    parser.add_argument(
+        "directory",
+        type=str,
+        help="Directory to find files from.",
+    )
+    parser.add_argument(
+        "--recursive",
+        "-r",
+        action="store_true",
+        help="Whether to recurse into subdirectories.",
+    )
+    parser.add_argument(
+        "--extension", "-e", type=str, default=None, help="Extension to look for."
+    )
+    parser.add_argument(
+        "--output", "-o", type=str, default=None, help="Name of output txt file."
+    )
+
+    parsed = parse_args(parser, verbose=False)
+
+    if os.path.exists(parsed.directory):
+        files = get_all_files_in_dir(parsed.directory, ext=parsed.extension, return_absolute=False, recursive=parsed.recursive)
+        output = parsed.output if parsed.output is not None else os.path.join(parsed.directory, "current_contents.txt")
+        with open(output, "w") as f:
+            for fname in files:
+                f.write(f"{fname}\n")
+    else:
+        raise ValueError("Please pass a valid directory")
