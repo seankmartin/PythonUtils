@@ -175,6 +175,7 @@ def read_python(path, dirname_replacement=""):
         contents = contents.replace("__dirname__", normalise_path(dirname_replacement))
     else:
         contents = contents.replace("__dirname__", normalise_path(os.path.dirname(path)))
+    contents = contents.replace("__thisdirname__", normalise_path(os.path.dirname(path)))
     metadata = {}
     exec(contents, {}, metadata)
     metadata = {k.lower(): v for (k, v) in metadata.items()}
