@@ -1,3 +1,5 @@
+"""Utilities for pandas dataframes."""
+
 import pandas as pd
 
 
