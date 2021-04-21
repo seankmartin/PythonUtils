@@ -14,8 +14,13 @@ def arr_to_str(name, arr):
         if isinstance(val, str):
             val = val.replace(" ", "_")
             out_str = "{},{}".format(out_str, val)
-        else:
+        elif isinstance(val, float):
             out_str = "{},{:4f}".format(out_str, val)
+        elif isinstance(val, int):
+            out_str = "{},{}".format(out_str, val)
+        else:
+            out_str = '{}, "{}"'.format(out_str, val)
+
     return out_str
 
 
