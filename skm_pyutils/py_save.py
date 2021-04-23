@@ -7,24 +7,28 @@ import numpy as np
 from skm_pyutils.py_path import make_path_if_not_exists
 from skm_pyutils.py_log import log_exception
 
+def val_to_str(val):
+    if isinstance(val, str):
+        out_str = val.replace(" ", "_")
+    elif isinstance(val, float):
+        out_str = "{:4f}".format(val)
+    elif isinstance(val, int):
+        out_str = str(val)
+    else:
+        str_val = str(val).replace("\n", " ").replace(",", "")
+        out_str = '"{}"'.format(str_val)
+    return out_str
 
 def arr_to_str(name, arr):
     out_str = name
     for val in arr:
-        if isinstance(val, str):
-            val = val.replace(" ", "_")
-            out_str = "{},{}".format(out_str, val)
-        elif isinstance(val, float):
-            out_str = "{},{:4f}".format(out_str, val)
-        elif isinstance(val, int):
-            out_str = "{},{}".format(out_str, val)
-        else:
-            out_str = '{}, "{}"'.format(out_str, val)
+        str_val = val_to_str(val)
+        out_str = "{}, {}".format(out_str, str_val)
 
     return out_str
 
 
-def save_mixed_dict_to_csv(in_dict, out_dir, out_name="results.csv"):
+def save_mixed_dict_to_csv(in_dict, out_dir, out_name="results.csv", save=True):
     """
     Save a dictionary with mixed value types to a csv.
 
@@ -35,25 +39,40 @@ def save_mixed_dict_to_csv(in_dict, out_dir, out_name="results.csv"):
         in_dict (dict): The dictionary to save to a csv.
         out_dir (str): The directory to save the csv to.
         out_name (str, optional): Defaults to "results.csv".
+        save (bool, optional): Defaults to True.
 
     Returns:
-        None
+        The string representation of the data saved to csv.
 
     """
-    out_loc = os.path.join(out_dir, out_name)
-    make_path_if_not_exists(out_loc)
-    print("Saving mixed dict data to {}".format(out_loc))
-    with open(out_loc, "w") as f:
-        for key, val in in_dict.items():
-            if isinstance(val, dict):
-                out_str = arr_to_str(key, val.values())
-            elif isinstance(val, np.ndarray):
-                out_str = arr_to_str(key, val.flatten())
-            elif isinstance(val, list):
-                out_str = arr_to_str(key, val)
-            else:
-                raise ValueError("Unrecognised type {} quitting".format(type(val)))
+    full_str = ""
+    if save:
+        out_loc = os.path.join(out_dir, out_name)
+        make_path_if_not_exists(out_loc)
+        print("Saving mixed dict data to {}".format(out_loc))
+        f = open(out_loc, "w")
+
+    for key, val in in_dict.items():
+        if isinstance(val, dict):
+            out_str = ""
+            for k2, val2 in val.items():
+                name = "{} -- {}".format(key, k2)
+                out_str += arr_to_str(name, val2) + "\n"
+            out_str = out_str[:-1]
+        elif isinstance(val, np.ndarray):
+            out_str = arr_to_str(key, val.flatten())
+        elif isinstance(val, list):
+            out_str = arr_to_str(key, val)
+        else:
+            out_str = "{}, {}".format(key, val_to_str(val))
+        full_str += out_str + "\n"
+        if save:
             f.write(out_str + "\n")
+    
+    if save:
+        f.close()
+
+    return full_str
 
 
 def save_dicts_to_csv(filename, in_dicts, do_sort=True):
