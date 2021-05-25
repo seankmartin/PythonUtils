@@ -23,6 +23,9 @@ def read_cfg(location, verbose=True):
         The python ConfigParser object after reading the cfg.
 
     """
+    if not os.path.exists(location):
+        raise ValueError(f"Config file {location} does not exist")
+
     config = configparser.ConfigParser()
     config.read(location)
 
