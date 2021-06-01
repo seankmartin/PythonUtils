@@ -37,6 +37,7 @@ ENTRY_POINTS = {
     "console_scripts": [
         "pdf-merge = skm_pyutils.py_pdf:cli_entry",
         "dir-list = skm_pyutils.py_path:cli_entry",
+        "copy-files = skm_pyutils.py_path:cli_copy_files_in_dir"
     ]
 }
 

@@ -22,6 +22,7 @@ For example
 ```
 pdf-merge -d . -r -o merged.pdf
 dir-list . -r -e .txt -o txt_file_list.txt
+copy-files input_dir output_dir -re .*results.*.png
 ```
 
 ## Modules

@@ -2,6 +2,7 @@
 import os
 import re
 import argparse
+import shutil
 from collections import OrderedDict
 
 from skm_pyutils.py_config import parse_args
@@ -297,5 +298,70 @@ def cli_entry():
         raise ValueError("Please pass a valid directory")
 
 
+def cli_copy_files_in_dir():
+    parser = argparse.ArgumentParser(description="Directory list command line")
+
+    parser.add_argument(
+        "input_directory", type=str, help="Directory to find files from.",
+    )
+    parser.add_argument(
+        "output_directory", type=str, help="Directory to copy files to."
+    )
+    parser.add_argument(
+        "--recursive",
+        "-r",
+        action="store_true",
+        help="Whether to recurse into subdirectories.",
+    )
+    parser.add_argument(
+        "--extension", "-e", type=str, default=None, help="Extension to look for."
+    )
+    parser.add_argument(
+        "--regular_expression",
+        "-re",
+        type=str,
+        default=None,
+        help="Regular expression to filter files by.",
+    )
+    parser.add_argument(
+        "--move", "-mv", action="store_true", help="Move files instead of copying them."
+    )
+    parser.add_argument(
+        "--dummy",
+        "-d",
+        action="store_true",
+        help="Dummy run, only print files that would be copied.",
+    )
+
+    parsed = parse_args(parser, verbose=False)
+
+    if os.path.exists(parsed.input_directory):
+        files = get_all_files_in_dir(
+            parsed.input_directory,
+            ext=parsed.extension,
+            return_absolute=False,
+            recursive=parsed.recursive,
+            re_filter=parsed.regular_expression,
+        )
+        if parsed.dummy:
+            name = "move" if parsed.move else "copy"
+            print(f"Would {name} these files to {parsed.output_directory}:")
+            for f in files:
+                print(f)
+            return
+
+        os.makedirs(parsed.output_directory, exist_ok=True)
+        for fname in files:
+            output_loc = os.path.join(parsed.output_directory, fname)
+            input_loc = os.path.join(parsed.input_directory, fname)
+            if parsed.move:
+                shutil.move(input_loc, output_loc)
+            else:
+                shutil.copy(input_loc, output_loc)
+    else:
+        raise ValueError("Please pass a valid directory")
+
+
 if __name__ == "__main__":
-    cli_entry()
+    # cli_entry()
+    cli_copy_files_in_dir()
