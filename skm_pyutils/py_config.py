@@ -1,7 +1,6 @@
 """Config file and logging related utility functions."""
 import os
 import sys
-import logging
 import configparser
 from pprint import pprint
 
@@ -136,7 +135,11 @@ def read_python(path, dirname_replacement=""):
         "__thisdirname__", normalise_path(os.path.dirname(path))
     )
     metadata = {}
-    exec(contents, {}, metadata)
+    try:
+        exec(contents, {}, metadata)
+    except Exception as e:
+        # traceback.print_exc()
+        raise ValueError("An error occurred reading {}".format(path))
     metadata = {k.lower(): v for (k, v) in metadata.items()}
     return metadata
 
