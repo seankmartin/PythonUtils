@@ -108,14 +108,16 @@ def get_default_log_loc(name):
     return default_loc
 
 
-def setup_text_logging(in_dir, bname="logfile.log", append=False):
+def setup_text_logging(in_dir, loglevel, bname="logfile.log", append=False):
     """
     Pass logging file location to logging.
 
     Parameters
     ----------
     in_dir : str
-        Directory to save log file to.
+        Directory to save log file to. Can be None to use bname directly.
+    loglevel : str
+        The name of the log level to use, e.g. "debug" or 10
     bname : str, optional, defaults to "logfile.log"
         The basename of the log file to save to.
     append: bool, optional, defaults to False
@@ -125,10 +127,29 @@ def setup_text_logging(in_dir, bname="logfile.log", append=False):
     None
 
     """
-    fname = os.path.join(in_dir, bname)
+    try:
+        numeric_level = int(loglevel)
+    except BaseException:
+        numeric_level = getattr(logging, loglevel.upper(), None)
+    if not isinstance(numeric_level, int):
+        raise ValueError("Invalid log level: %s" % loglevel)
+
+    if in_dir is None:
+        fname = bname
+    else:
+        fname = os.path.join(in_dir, bname)
     if not append:
         if os.path.isfile(fname):
             open(fname, "w").close()
-    logging.basicConfig(filename=fname, level=logging.DEBUG)
+    # Encoding only supported in 3.9+
+    logging.basicConfig(
+        filename=fname,
+        # encoding="utf-8",
+        level=numeric_level,
+        format="%(levelname)s: %(asctime)s %(message)s",
+        datefmt="%d/%m/%Y %I:%M:%S %p",
+    )
     mpl_logger = logging.getLogger("matplotlib")
     mpl_logger.setLevel(level=logging.WARNING)
+
+    print("See {} for {} level logs".format(fname, loglevel))
