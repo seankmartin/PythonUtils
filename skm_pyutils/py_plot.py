@@ -231,3 +231,18 @@ class GridFig:
         self.idx = self.idx + 1
         if self.idx == self.rows * self.cols:
             self.idx = 0
+
+class UnicodeGrabber(object):
+    """This is a fully static class to get unicode chars for plotting."""
+    char_dict = {
+        "micro": u"\u00B5",
+        "pow2": u"\u00B2",
+    }
+
+    @staticmethod
+    def get_chars():
+        return list(UnicodeGrabber.char_dict.keys())
+
+    @staticmethod
+    def get(char, default=""):
+        return UnicodeGrabber.char_dict.get(char, default)
