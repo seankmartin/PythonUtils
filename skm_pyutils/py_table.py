@@ -1,4 +1,5 @@
 """Utilities for pandas dataframes."""
+import os
 
 import pandas as pd
 
@@ -43,4 +44,33 @@ def list_to_df(in_list, transpose=False, headers=None):
         df.columns = headers
     else:
         df = pd.DataFrame.from_records(in_list, columns=headers)
+    return df
+
+
+def df_from_file(filename):
+    """
+    Read a pandas.DataFrame from filename.
+
+    Parameters
+    ----------
+    filename : str
+        The path to the file to read
+
+    Returns
+    -------
+    pandas.DataFrame
+        The read data
+
+    """
+    ext = os.path.splitext(filename)[1]
+    if ext == ".psv":
+        df = pd.read_csv(filename, delimiter="|")
+    elif ext == '.csv':
+        df = pd.read_csv(filename)
+    elif ext == '.xlsx':
+        df = pd.read_excel(filename)
+    else:
+        raise ValueError(
+            f"Unsupported file extension {ext}"
+        )
     return df
