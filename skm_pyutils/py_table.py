@@ -37,7 +37,10 @@ def list_to_df(in_list, transpose=False, headers=None):
 
     """
     if headers is None:
-        headers = ["V{}".format(i) for i in range(len(in_list[0]))]
+        if not transpose:
+            headers = ["V{}".format(i) for i in range(len(in_list[0]))]
+        else:
+            headers = ["V{}".format(i) for i in range(len(in_list))]
 
     if transpose:
         df = pd.DataFrame(in_list).T
