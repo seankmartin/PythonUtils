@@ -153,3 +153,61 @@ def setup_text_logging(in_dir, loglevel, bname="logfile.log", append=False):
     mpl_logger.setLevel(level=logging.WARNING)
 
     print("See {} for {} level logs".format(fname, loglevel))
+
+
+class FileStdoutLogger:
+    """A logger that prints to stdout and to a file."""
+
+    def __init__(self, name="stdout_logger"):
+        self.name = name
+        self.logger = None
+        self.create_logger()
+
+    def init_logging(self):
+        out_loc = self.get_default_log_loc()
+        output_file_handler = logging.FileHandler(out_loc)
+        stdout_handler = logging.StreamHandler(sys.stdout)
+
+        self.logger.addHandler(output_file_handler)
+        self.logger.addHandler(stdout_handler)
+
+    def create_logger(self):
+        logger = logging.getLogger(self.name)
+        logger.setLevel(logging.INFO)
+
+        self.logger = logger
+
+        if len(self.get_handlers()) == 0:
+            self.init_logging()
+
+    def print(self, msg):
+        self.logger.info(msg)
+
+    def get_default_log_loc(self):
+        home = os.path.expanduser("~")
+        out_loc = os.path.join(home, ".skm_python", f"{self.name}.log")
+        os.makedirs(os.path.dirname(out_loc), exist_ok=True)
+
+        return out_loc
+
+    def read_log_file(self):
+        loc = self.get_default_log_loc()
+        if os.path.exists(loc):
+            with open(loc, "r") as f:
+                out = f.read().strip()
+            return out
+        else:
+            return "No log file exists."
+
+    def clear_log_file(self):
+        handlers = self.logger.handlers[:]
+        for handler in handlers:
+            handler.close()
+            self.logger.removeHandler(handler)
+
+        loc = self.get_default_log_loc()
+        if os.path.exists(loc):
+            os.remove(loc)
+
+    def get_handlers(self):
+        return self.logger.handlers[:]
