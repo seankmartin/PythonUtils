@@ -108,7 +108,9 @@ def get_default_log_loc(name):
     return default_loc
 
 
-def setup_text_logging(in_dir, loglevel, bname="logfile.log", append=False):
+def setup_text_logging(
+    in_dir, loglevel, bname="logfile.log", append=False, logname=None
+):
     """
     Pass logging file location to logging.
 
@@ -121,6 +123,8 @@ def setup_text_logging(in_dir, loglevel, bname="logfile.log", append=False):
     bname : str, optional, defaults to "logfile.log"
         The basename of the log file to save to.
     append: bool, optional, defaults to False
+    logname : str, optional, defaults to None
+        If provided, creates this logger. Otherwise uses the root logger.
 
     Returns
     -------
@@ -141,18 +145,29 @@ def setup_text_logging(in_dir, loglevel, bname="logfile.log", append=False):
     if not append:
         if os.path.isfile(fname):
             open(fname, "w").close()
-    # Encoding only supported in 3.9+
-    logging.basicConfig(
-        filename=fname,
-        # encoding="utf-8",
-        level=numeric_level,
-        format="%(levelname)s: %(asctime)s %(message)s",
-        datefmt="%d/%m/%Y %I:%M:%S %p",
+
+    root = logging.getLogger(logname)
+    root.setLevel(numeric_level)
+    file_handler = logging.FileHandler(fname)
+    file_handler.setFormatter(
+        logging.Formatter(
+            fmt="%(levelname)s: %(asctime)s %(message)s",
+            datefmt="%d/%m/%Y %I:%M:%S %p",
+        )
     )
+    root.addHandler(file_handler)
+    # Encoding only supported in 3.9+
+    # logging.basicConfig(
+    #     filename=fname,
+    #     # encoding="utf-8",
+    #     level=numeric_level,
+    #     format="%(levelname)s: %(asctime)s %(message)s",
+    #     datefmt="%d/%m/%Y %I:%M:%S %p",
+    # )
     mpl_logger = logging.getLogger("matplotlib")
     mpl_logger.setLevel(level=logging.WARNING)
 
-    print("See {} for {} level logs".format(fname, loglevel))
+    # print("See {} for {} level logs".format(fname, loglevel))
 
 
 class FileStdoutLogger:
@@ -164,7 +179,8 @@ class FileStdoutLogger:
         self.create_logger()
 
     def init_logging(self):
-        out_loc = self.get_default_log_loc()
+        self.logger.setLevel(logging.INFO)
+        out_loc = self.get_default_log_location()
         output_file_handler = logging.FileHandler(out_loc)
         stdout_handler = logging.StreamHandler(sys.stdout)
 
@@ -172,18 +188,15 @@ class FileStdoutLogger:
         self.logger.addHandler(stdout_handler)
 
     def create_logger(self):
-        logger = logging.getLogger(self.name)
-        logger.setLevel(logging.INFO)
-
-        self.logger = logger
-
+        if self.logger is None:
+            self.logger = logging.getLogger(self.name)
         if len(self.get_handlers()) == 0:
             self.init_logging()
 
     def print(self, msg):
         self.logger.info(msg)
 
-    def get_default_log_loc(self):
+    def get_default_log_location(self):
         home = os.path.expanduser("~")
         out_loc = os.path.join(home, ".skm_python", f"{self.name}.log")
         os.makedirs(os.path.dirname(out_loc), exist_ok=True)
@@ -191,7 +204,7 @@ class FileStdoutLogger:
         return out_loc
 
     def read_log_file(self):
-        loc = self.get_default_log_loc()
+        loc = self.get_default_log_location()
         if os.path.exists(loc):
             with open(loc, "r") as f:
                 out = f.read().strip()
@@ -205,7 +218,83 @@ class FileStdoutLogger:
             handler.close()
             self.logger.removeHandler(handler)
 
-        loc = self.get_default_log_loc()
+        loc = self.get_default_log_location()
+        if os.path.exists(loc):
+            os.remove(loc)
+
+    def get_handlers(self):
+        return self.logger.handlers[:]
+
+
+class FileLogger:
+    """A logger that prints to a file."""
+
+    def __init__(self, name="main", level="warning"):
+        self.name = name
+        self.logger = None
+        self.level = level
+        self.create_logger()
+
+    def init_logging(self):
+        out_loc = self.get_default_log_location()
+        setup_text_logging(None, self.level, out_loc, append=True, logname=self.name)
+
+    def create_logger(self):
+        if self.logger is None:
+            self.logger = logging.getLogger(self.name)
+        if len(self.get_handlers()) == 0:
+            self.init_logging()
+
+    def info(self, msg):
+        self.logger.info(msg)
+
+    def warning(self, msg):
+        self.logger.warning(msg)
+
+    def error(self, msg):
+        self.logger.error(msg)
+
+    def critical(self, msg):
+        self.logger.critical(msg)
+
+    def debug(self, msg):
+        self.logger.debug(msg)
+
+    def set_level(self, loglevel):
+        try:
+            numeric_level = int(loglevel)
+        except BaseException:
+            numeric_level = getattr(logging, loglevel.upper(), None)
+        if not isinstance(numeric_level, int):
+            raise ValueError("Invalid log level: %s" % loglevel)
+
+        self.logger.setLevel(numeric_level)
+        filename = self.get_default_log_location()
+        print("See {} for {} level logs".format(filename, loglevel))
+
+    def get_default_log_location(self):
+        home = os.path.expanduser("~")
+        out_loc = os.path.join(home, ".skm_python", f"{self.name}.log")
+        os.makedirs(os.path.dirname(out_loc), exist_ok=True)
+
+        return out_loc
+
+    def read_log_file(self):
+        loc = self.get_default_log_location()
+        if os.path.exists(loc):
+            with open(loc, "r") as f:
+                out = f.read().strip()
+            return out
+        else:
+            return "No log file exists."
+
+    def clear_log_file(self):
+        handlers = self.logger.handlers[:]
+        for handler in handlers:
+            handler.close()
+            self.logger.removeHandler(handler)
+
+        loc = self.get_default_log_location()
         if os.path.exists(loc):
             os.remove(loc)
 
