@@ -245,20 +245,20 @@ class FileLogger:
         if len(self.get_handlers()) == 0:
             self.init_logging()
 
-    def info(self, msg):
-        self.logger.info(msg)
+    def info(self, msg, **kwargs):
+        self.logger.info(msg, **kwargs)
 
-    def warning(self, msg):
-        self.logger.warning(msg)
+    def warning(self, msg, **kwargs):
+        self.logger.warning(msg, **kwargs)
 
-    def error(self, msg):
-        self.logger.error(msg)
+    def error(self, msg, **kwargs):
+        self.logger.error(msg, **kwargs)
 
-    def critical(self, msg):
-        self.logger.critical(msg)
+    def critical(self, msg, **kwargs):
+        self.logger.critical(msg, **kwargs)
 
-    def debug(self, msg):
-        self.logger.debug(msg)
+    def debug(self, msg, **kwargs):
+        self.logger.debug(msg, **kwargs)
 
     def set_level(self, loglevel):
         try:
