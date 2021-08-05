@@ -213,14 +213,15 @@ class FileStdoutLogger:
             return "No log file exists."
 
     def clear_log_file(self):
-        handlers = self.logger.handlers[:]
-        for handler in handlers:
-            handler.close()
-            self.logger.removeHandler(handler)
+        # handlers = self.logger.handlers[:]
+        # for handler in handlers:
+        #     handler.close()
+        #     self.logger.removeHandler(handler)
 
         loc = self.get_default_log_location()
         if os.path.exists(loc):
-            os.remove(loc)
+            open(loc, 'w').close()
+
 
     def get_handlers(self):
         return self.logger.handlers[:]
