@@ -77,3 +77,36 @@ def df_from_file(filename):
             f"Unsupported file extension {ext}"
         )
     return df
+
+def df_to_file(df, filename, index=False, **kwargs):
+    """
+    Save a pandas.DataFrame to filename.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The input dataframe to save.
+    filename : str
+        The path of the file to save to.
+    index : bool
+        Whether to write row names, by default False.
+    kwargs : keyword arguments
+        Passed to pandas method.
+
+    Returns
+    -------
+    None
+
+    """
+    ext = os.path.splitext(filename)[1]
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    if ext == ".psv":
+        df.to_csv(filename, sep="|", index=index, **kwargs)
+    elif ext == '.csv':
+        df.to_csv(filename, sep=",", index=index, **kwargs)
+    elif ext == '.xlsx':
+        df.to_excel(filename, index=index, **kwargs)
+    else:
+        raise ValueError(
+            f"Unsupported file extension {ext}"
+        )
