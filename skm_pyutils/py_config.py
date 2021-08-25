@@ -138,8 +138,10 @@ def read_python(path, dirname_replacement=""):
     try:
         exec(contents, {}, metadata)
     except Exception as e:
-        # traceback.print_exc()
-        raise ValueError("An error occurred reading {}".format(path))
+        import traceback
+        print("QUITTING: An error occurred reading {}".format(path))
+        traceback.print_exc()
+        exit(-1)
     metadata = {k.lower(): v for (k, v) in metadata.items()}
     return metadata
 
