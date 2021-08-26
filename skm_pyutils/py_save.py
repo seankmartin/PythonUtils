@@ -64,7 +64,7 @@ def save_mixed_dict_to_csv(in_dict, out_dir, out_name="results.csv", save=True):
         elif isinstance(val, list):
             out_str = arr_to_str(key, val)
         else:
-            out_str = "{}, {}".format(key, val_to_str(val))
+            out_str = "{},{}".format(key, val_to_str(val))
         full_str += out_str + "\n"
         if save:
             f.write(out_str + "\n")
