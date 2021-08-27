@@ -33,10 +33,15 @@ def pdf_cat(input_files, output_location):
         output_location = "pdf_merge_" + whole_time + ".pdf"
 
     merger = PdfFileMerger()
+    n_merged = 0
     for pdf in input_files:
-        print(f"Merging {pdf}")
-        merger.append(pdf)
-    print(f"Saving merged output of {len(input_files)} files to {output_location}")
+        if os.path.exists(pdf):
+            print(f"Merging {pdf}")
+            merger.append(pdf)
+            n_merged += 1
+        else:
+            print("Warning: {} does not exist".format(pdf))
+    print(f"Saving merged output of {n_merged} files to {output_location}")
     merger.write(output_location)
     merger.close()
 
