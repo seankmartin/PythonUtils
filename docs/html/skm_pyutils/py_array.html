@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.7.5" />
-<title>skm_pyutils API documentation</title>
-<meta name="description" content="skm_pyutils contains utility scripts created by Sean K Martin." />
+<title>skm_pyutils.py_array API documentation</title>
+<meta name="description" content="Array manipulation." />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -17,65 +17,51 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>skm_pyutils</code></h1>
+<h1 class="title">Module <code>skm_pyutils.py_array</code></h1>
 </header>
 <section id="section-intro">
-<p>skm_pyutils contains utility scripts created by Sean K Martin.</p>
+<p>Array manipulation.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34;skm_pyutils contains utility scripts created by Sean K Martin.&#34;&#34;&#34;</code></pre>
+<pre><code class="python">&#34;&#34;&#34;Array manipulation.&#34;&#34;&#34;
+import numpy as np
+
+
+def non_zero_divide(numerator, denominator):
+    &#34;&#34;&#34;Divide numerator / denominator, but if denominator is zero result is zero&#34;&#34;&#34;
+    result = np.divide(
+        numerator, denominator, out=np.zeros_like(numerator), where=denominator != 0
+    )
+    return result</code></pre>
 </details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt><code class="name"><a title="skm_pyutils.py_array" href="py_array.html">skm_pyutils.py_array</a></code></dt>
+<dt id="skm_pyutils.py_array.non_zero_divide"><code class="name flex">
+<span>def <span class="ident">non_zero_divide</span></span>(<span>numerator, denominator)</span>
+</code></dt>
 <dd>
-<section class="desc"><p>Array manipulation.</p></section>
-</dd>
-<dt><code class="name"><a title="skm_pyutils.py_config" href="py_config.html">skm_pyutils.py_config</a></code></dt>
-<dd>
-<section class="desc"><p>Config file and logging related utility functions.</p></section>
-</dd>
-<dt><code class="name"><a title="skm_pyutils.py_log" href="py_log.html">skm_pyutils.py_log</a></code></dt>
-<dd>
-<section class="desc"><p>Logging related functions.</p></section>
-</dd>
-<dt><code class="name"><a title="skm_pyutils.py_path" href="py_path.html">skm_pyutils.py_path</a></code></dt>
-<dd>
-<section class="desc"><p>Path related utility functions.</p></section>
-</dd>
-<dt><code class="name"><a title="skm_pyutils.py_pdf" href="py_pdf.html">skm_pyutils.py_pdf</a></code></dt>
-<dd>
-<section class="desc"><p>PDF file related utilities.</p></section>
-</dd>
-<dt><code class="name"><a title="skm_pyutils.py_plot" href="py_plot.html">skm_pyutils.py_plot</a></code></dt>
-<dd>
-<section class="desc"><p>Utilities for plotting with matplotlib.</p></section>
-</dd>
-<dt><code class="name"><a title="skm_pyutils.py_print" href="py_print.html">skm_pyutils.py_print</a></code></dt>
-<dd>
-<section class="desc"><p>This module handles printing items such as dicts …</p></section>
-</dd>
-<dt><code class="name"><a title="skm_pyutils.py_profile" href="py_profile.html">skm_pyutils.py_profile</a></code></dt>
-<dd>
-<section class="desc"><p>Utilities for code performance profiling.</p></section>
-</dd>
-<dt><code class="name"><a title="skm_pyutils.py_save" href="py_save.html">skm_pyutils.py_save</a></code></dt>
-<dd>
-<section class="desc"><p>Utilities for saving structures to disk.</p></section>
-</dd>
-<dt><code class="name"><a title="skm_pyutils.py_table" href="py_table.html">skm_pyutils.py_table</a></code></dt>
-<dd>
-<section class="desc"><p>Utilities for pandas dataframes.</p></section>
+<section class="desc"><p>Divide numerator / denominator, but if denominator is zero result is zero</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def non_zero_divide(numerator, denominator):
+    &#34;&#34;&#34;Divide numerator / denominator, but if denominator is zero result is zero&#34;&#34;&#34;
+    result = np.divide(
+        numerator, denominator, out=np.zeros_like(numerator), where=denominator != 0
+    )
+    return result</code></pre>
+</details>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
 </section>
 <section>
 </section>
@@ -86,18 +72,14 @@
 <ul></ul>
 </div>
 <ul id="index">
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3>Super-module</h3>
 <ul>
-<li><code><a title="skm_pyutils.py_array" href="py_array.html">skm_pyutils.py_array</a></code></li>
-<li><code><a title="skm_pyutils.py_config" href="py_config.html">skm_pyutils.py_config</a></code></li>
-<li><code><a title="skm_pyutils.py_log" href="py_log.html">skm_pyutils.py_log</a></code></li>
-<li><code><a title="skm_pyutils.py_path" href="py_path.html">skm_pyutils.py_path</a></code></li>
-<li><code><a title="skm_pyutils.py_pdf" href="py_pdf.html">skm_pyutils.py_pdf</a></code></li>
-<li><code><a title="skm_pyutils.py_plot" href="py_plot.html">skm_pyutils.py_plot</a></code></li>
-<li><code><a title="skm_pyutils.py_print" href="py_print.html">skm_pyutils.py_print</a></code></li>
-<li><code><a title="skm_pyutils.py_profile" href="py_profile.html">skm_pyutils.py_profile</a></code></li>
-<li><code><a title="skm_pyutils.py_save" href="py_save.html">skm_pyutils.py_save</a></code></li>
-<li><code><a title="skm_pyutils.py_table" href="py_table.html">skm_pyutils.py_table</a></code></li>
+<li><code><a title="skm_pyutils" href="index.html">skm_pyutils</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="skm_pyutils.py_array.non_zero_divide" href="#skm_pyutils.py_array.non_zero_divide">non_zero_divide</a></code></li>
 </ul>
 </li>
 </ul>

@@ -135,30 +135,199 @@ def get_default_log_loc(name):
     return default_loc
 
 
-def setup_text_logging(in_dir, bname=&#34;logfile.log&#34;, append=False):
+def setup_text_logging(
+    in_dir, loglevel, bname=&#34;logfile.log&#34;, append=False, logname=None
+):
     &#34;&#34;&#34;
     Pass logging file location to logging.
 
     Parameters
     ----------
     in_dir : str
-        Directory to save log file to.
+        Directory to save log file to. Can be None to use bname directly.
+    loglevel : str
+        The name of the log level to use, e.g. &#34;debug&#34; or 10
     bname : str, optional, defaults to &#34;logfile.log&#34;
         The basename of the log file to save to.
     append: bool, optional, defaults to False
+    logname : str, optional, defaults to None
+        If provided, creates this logger. Otherwise uses the root logger.
 
     Returns
     -------
     None
 
     &#34;&#34;&#34;
-    fname = os.path.join(in_dir, bname)
+    try:
+        numeric_level = int(loglevel)
+    except BaseException:
+        numeric_level = getattr(logging, loglevel.upper(), None)
+    if not isinstance(numeric_level, int):
+        raise ValueError(&#34;Invalid log level: %s&#34; % loglevel)
+
+    if in_dir is None:
+        fname = bname
+    else:
+        fname = os.path.join(in_dir, bname)
     if not append:
         if os.path.isfile(fname):
             open(fname, &#34;w&#34;).close()
-    logging.basicConfig(filename=fname, level=logging.DEBUG)
+
+    root = logging.getLogger(logname)
+    root.setLevel(numeric_level)
+    file_handler = logging.FileHandler(fname)
+    file_handler.setFormatter(
+        logging.Formatter(
+            fmt=&#34;%(levelname)s: %(asctime)s %(message)s&#34;,
+            datefmt=&#34;%d/%m/%Y %I:%M:%S %p&#34;,
+        )
+    )
+    root.addHandler(file_handler)
+    # Encoding only supported in 3.9+
+    # logging.basicConfig(
+    #     filename=fname,
+    #     # encoding=&#34;utf-8&#34;,
+    #     level=numeric_level,
+    #     format=&#34;%(levelname)s: %(asctime)s %(message)s&#34;,
+    #     datefmt=&#34;%d/%m/%Y %I:%M:%S %p&#34;,
+    # )
     mpl_logger = logging.getLogger(&#34;matplotlib&#34;)
-    mpl_logger.setLevel(level=logging.WARNING)</code></pre>
+    mpl_logger.setLevel(level=logging.WARNING)
+
+    # print(&#34;See {} for {} level logs&#34;.format(fname, loglevel))
+
+
+class FileStdoutLogger:
+    &#34;&#34;&#34;A logger that prints to stdout and to a file.&#34;&#34;&#34;
+
+    def __init__(self, name=&#34;stdout_logger&#34;):
+        self.name = name
+        self.logger = None
+        self.create_logger()
+
+    def init_logging(self):
+        self.logger.setLevel(logging.INFO)
+        out_loc = self.get_default_log_location()
+        output_file_handler = logging.FileHandler(out_loc)
+        stdout_handler = logging.StreamHandler(sys.stdout)
+
+        self.logger.addHandler(output_file_handler)
+        self.logger.addHandler(stdout_handler)
+
+    def create_logger(self):
+        if self.logger is None:
+            self.logger = logging.getLogger(self.name)
+        if len(self.get_handlers()) == 0:
+            self.init_logging()
+
+    def print(self, msg):
+        self.logger.info(msg)
+
+    def get_default_log_location(self):
+        home = os.path.expanduser(&#34;~&#34;)
+        out_loc = os.path.join(home, &#34;.skm_python&#34;, f&#34;{self.name}.log&#34;)
+        os.makedirs(os.path.dirname(out_loc), exist_ok=True)
+
+        return out_loc
+
+    def read_log_file(self):
+        loc = self.get_default_log_location()
+        if os.path.exists(loc):
+            with open(loc, &#34;r&#34;) as f:
+                out = f.read().strip()
+            return out
+        else:
+            return &#34;No log file exists.&#34;
+
+    def clear_log_file(self):
+        # handlers = self.logger.handlers[:]
+        # for handler in handlers:
+        #     handler.close()
+        #     self.logger.removeHandler(handler)
+
+        loc = self.get_default_log_location()
+        if os.path.exists(loc):
+            open(loc, &#39;w&#39;).close()
+
+
+    def get_handlers(self):
+        return self.logger.handlers[:]
+
+
+class FileLogger:
+    &#34;&#34;&#34;A logger that prints to a file.&#34;&#34;&#34;
+
+    def __init__(self, name=&#34;main&#34;, level=&#34;warning&#34;):
+        self.name = name
+        self.logger = None
+        self.level = level
+        self.create_logger()
+
+    def init_logging(self):
+        out_loc = self.get_default_log_location()
+        setup_text_logging(None, self.level, out_loc, append=True, logname=self.name)
+
+    def create_logger(self):
+        if self.logger is None:
+            self.logger = logging.getLogger(self.name)
+        if len(self.get_handlers()) == 0:
+            self.init_logging()
+
+    def info(self, msg, **kwargs):
+        self.logger.info(msg, **kwargs)
+
+    def warning(self, msg, **kwargs):
+        self.logger.warning(msg, **kwargs)
+
+    def error(self, msg, **kwargs):
+        self.logger.error(msg, **kwargs)
+
+    def critical(self, msg, **kwargs):
+        self.logger.critical(msg, **kwargs)
+
+    def debug(self, msg, **kwargs):
+        self.logger.debug(msg, **kwargs)
+
+    def set_level(self, loglevel):
+        try:
+            numeric_level = int(loglevel)
+        except BaseException:
+            numeric_level = getattr(logging, loglevel.upper(), None)
+        if not isinstance(numeric_level, int):
+            raise ValueError(&#34;Invalid log level: %s&#34; % loglevel)
+
+        self.logger.setLevel(numeric_level)
+        filename = self.get_default_log_location()
+        print(&#34;See {} for {} level logs&#34;.format(filename, loglevel))
+
+    def get_default_log_location(self):
+        home = os.path.expanduser(&#34;~&#34;)
+        out_loc = os.path.join(home, &#34;.skm_python&#34;, f&#34;{self.name}.log&#34;)
+        os.makedirs(os.path.dirname(out_loc), exist_ok=True)
+
+        return out_loc
+
+    def read_log_file(self):
+        loc = self.get_default_log_location()
+        if os.path.exists(loc):
+            with open(loc, &#34;r&#34;) as f:
+                out = f.read().strip()
+            return out
+        else:
+            return &#34;No log file exists.&#34;
+
+    def clear_log_file(self):
+        handlers = self.logger.handlers[:]
+        for handler in handlers:
+            handler.close()
+            self.logger.removeHandler(handler)
+
+        loc = self.get_default_log_location()
+        if os.path.exists(loc):
+            os.remove(loc)
+
+    def get_handlers(self):
+        return self.logger.handlers[:]</code></pre>
 </details>
 </section>
 <section>
@@ -331,18 +500,22 @@ If None is passed, uses the default excepthook in this module.</dd>
 </details>
 </dd>
 <dt id="skm_pyutils.py_log.setup_text_logging"><code class="name flex">
-<span>def <span class="ident">setup_text_logging</span></span>(<span>in_dir, bname='logfile.log', append=False)</span>
+<span>def <span class="ident">setup_text_logging</span></span>(<span>in_dir, loglevel, bname='logfile.log', append=False, logname=None)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Pass logging file location to logging.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>in_dir</code></strong> :&ensp;<code>str</code></dt>
-<dd>Directory to save log file to.</dd>
+<dd>Directory to save log file to. Can be None to use bname directly.</dd>
+<dt><strong><code>loglevel</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the log level to use, e.g. "debug" or 10</dd>
 <dt><strong><code>bname</code></strong> :&ensp;<code>str</code>, optional, <code>defaults</code> <code>to</code> <code>"logfile.log"</code></dt>
 <dd>The basename of the log file to save to.</dd>
 <dt><strong><code>append</code></strong> :&ensp;<code>bool</code>, optional, <code>defaults</code> <code>to</code> <code>False</code></dt>
 <dd>&nbsp;</dd>
+<dt><strong><code>logname</code></strong> :&ensp;<code>str</code>, optional, <code>defaults</code> <code>to</code> <code>None</code></dt>
+<dd>If provided, creates this logger. Otherwise uses the root logger.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -353,28 +526,62 @@ If None is passed, uses the default excepthook in this module.</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def setup_text_logging(in_dir, bname=&#34;logfile.log&#34;, append=False):
+<pre><code class="python">def setup_text_logging(
+    in_dir, loglevel, bname=&#34;logfile.log&#34;, append=False, logname=None
+):
     &#34;&#34;&#34;
     Pass logging file location to logging.
 
     Parameters
     ----------
     in_dir : str
-        Directory to save log file to.
+        Directory to save log file to. Can be None to use bname directly.
+    loglevel : str
+        The name of the log level to use, e.g. &#34;debug&#34; or 10
     bname : str, optional, defaults to &#34;logfile.log&#34;
         The basename of the log file to save to.
     append: bool, optional, defaults to False
+    logname : str, optional, defaults to None
+        If provided, creates this logger. Otherwise uses the root logger.
 
     Returns
     -------
     None
 
     &#34;&#34;&#34;
-    fname = os.path.join(in_dir, bname)
+    try:
+        numeric_level = int(loglevel)
+    except BaseException:
+        numeric_level = getattr(logging, loglevel.upper(), None)
+    if not isinstance(numeric_level, int):
+        raise ValueError(&#34;Invalid log level: %s&#34; % loglevel)
+
+    if in_dir is None:
+        fname = bname
+    else:
+        fname = os.path.join(in_dir, bname)
     if not append:
         if os.path.isfile(fname):
             open(fname, &#34;w&#34;).close()
-    logging.basicConfig(filename=fname, level=logging.DEBUG)
+
+    root = logging.getLogger(logname)
+    root.setLevel(numeric_level)
+    file_handler = logging.FileHandler(fname)
+    file_handler.setFormatter(
+        logging.Formatter(
+            fmt=&#34;%(levelname)s: %(asctime)s %(message)s&#34;,
+            datefmt=&#34;%d/%m/%Y %I:%M:%S %p&#34;,
+        )
+    )
+    root.addHandler(file_handler)
+    # Encoding only supported in 3.9+
+    # logging.basicConfig(
+    #     filename=fname,
+    #     # encoding=&#34;utf-8&#34;,
+    #     level=numeric_level,
+    #     format=&#34;%(levelname)s: %(asctime)s %(message)s&#34;,
+    #     datefmt=&#34;%d/%m/%Y %I:%M:%S %p&#34;,
+    # )
     mpl_logger = logging.getLogger(&#34;matplotlib&#34;)
     mpl_logger.setLevel(level=logging.WARNING)</code></pre>
 </details>
@@ -382,6 +589,471 @@ If None is passed, uses the default excepthook in this module.</dd>
 </dl>
 </section>
 <section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="skm_pyutils.py_log.FileLogger"><code class="flex name class">
+<span>class <span class="ident">FileLogger</span></span>
+<span>(</span><span>name='main', level='warning')</span>
+</code></dt>
+<dd>
+<section class="desc"><p>A logger that prints to a file.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class FileLogger:
+    &#34;&#34;&#34;A logger that prints to a file.&#34;&#34;&#34;
+
+    def __init__(self, name=&#34;main&#34;, level=&#34;warning&#34;):
+        self.name = name
+        self.logger = None
+        self.level = level
+        self.create_logger()
+
+    def init_logging(self):
+        out_loc = self.get_default_log_location()
+        setup_text_logging(None, self.level, out_loc, append=True, logname=self.name)
+
+    def create_logger(self):
+        if self.logger is None:
+            self.logger = logging.getLogger(self.name)
+        if len(self.get_handlers()) == 0:
+            self.init_logging()
+
+    def info(self, msg, **kwargs):
+        self.logger.info(msg, **kwargs)
+
+    def warning(self, msg, **kwargs):
+        self.logger.warning(msg, **kwargs)
+
+    def error(self, msg, **kwargs):
+        self.logger.error(msg, **kwargs)
+
+    def critical(self, msg, **kwargs):
+        self.logger.critical(msg, **kwargs)
+
+    def debug(self, msg, **kwargs):
+        self.logger.debug(msg, **kwargs)
+
+    def set_level(self, loglevel):
+        try:
+            numeric_level = int(loglevel)
+        except BaseException:
+            numeric_level = getattr(logging, loglevel.upper(), None)
+        if not isinstance(numeric_level, int):
+            raise ValueError(&#34;Invalid log level: %s&#34; % loglevel)
+
+        self.logger.setLevel(numeric_level)
+        filename = self.get_default_log_location()
+        print(&#34;See {} for {} level logs&#34;.format(filename, loglevel))
+
+    def get_default_log_location(self):
+        home = os.path.expanduser(&#34;~&#34;)
+        out_loc = os.path.join(home, &#34;.skm_python&#34;, f&#34;{self.name}.log&#34;)
+        os.makedirs(os.path.dirname(out_loc), exist_ok=True)
+
+        return out_loc
+
+    def read_log_file(self):
+        loc = self.get_default_log_location()
+        if os.path.exists(loc):
+            with open(loc, &#34;r&#34;) as f:
+                out = f.read().strip()
+            return out
+        else:
+            return &#34;No log file exists.&#34;
+
+    def clear_log_file(self):
+        handlers = self.logger.handlers[:]
+        for handler in handlers:
+            handler.close()
+            self.logger.removeHandler(handler)
+
+        loc = self.get_default_log_location()
+        if os.path.exists(loc):
+            os.remove(loc)
+
+    def get_handlers(self):
+        return self.logger.handlers[:]</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="skm_pyutils.py_log.FileLogger.clear_log_file"><code class="name flex">
+<span>def <span class="ident">clear_log_file</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clear_log_file(self):
+    handlers = self.logger.handlers[:]
+    for handler in handlers:
+        handler.close()
+        self.logger.removeHandler(handler)
+
+    loc = self.get_default_log_location()
+    if os.path.exists(loc):
+        os.remove(loc)</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_log.FileLogger.create_logger"><code class="name flex">
+<span>def <span class="ident">create_logger</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_logger(self):
+    if self.logger is None:
+        self.logger = logging.getLogger(self.name)
+    if len(self.get_handlers()) == 0:
+        self.init_logging()</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_log.FileLogger.critical"><code class="name flex">
+<span>def <span class="ident">critical</span></span>(<span>self, msg, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def critical(self, msg, **kwargs):
+    self.logger.critical(msg, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_log.FileLogger.debug"><code class="name flex">
+<span>def <span class="ident">debug</span></span>(<span>self, msg, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def debug(self, msg, **kwargs):
+    self.logger.debug(msg, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_log.FileLogger.error"><code class="name flex">
+<span>def <span class="ident">error</span></span>(<span>self, msg, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def error(self, msg, **kwargs):
+    self.logger.error(msg, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_log.FileLogger.get_default_log_location"><code class="name flex">
+<span>def <span class="ident">get_default_log_location</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_default_log_location(self):
+    home = os.path.expanduser(&#34;~&#34;)
+    out_loc = os.path.join(home, &#34;.skm_python&#34;, f&#34;{self.name}.log&#34;)
+    os.makedirs(os.path.dirname(out_loc), exist_ok=True)
+
+    return out_loc</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_log.FileLogger.get_handlers"><code class="name flex">
+<span>def <span class="ident">get_handlers</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_handlers(self):
+    return self.logger.handlers[:]</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_log.FileLogger.info"><code class="name flex">
+<span>def <span class="ident">info</span></span>(<span>self, msg, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def info(self, msg, **kwargs):
+    self.logger.info(msg, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_log.FileLogger.init_logging"><code class="name flex">
+<span>def <span class="ident">init_logging</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def init_logging(self):
+    out_loc = self.get_default_log_location()
+    setup_text_logging(None, self.level, out_loc, append=True, logname=self.name)</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_log.FileLogger.read_log_file"><code class="name flex">
+<span>def <span class="ident">read_log_file</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read_log_file(self):
+    loc = self.get_default_log_location()
+    if os.path.exists(loc):
+        with open(loc, &#34;r&#34;) as f:
+            out = f.read().strip()
+        return out
+    else:
+        return &#34;No log file exists.&#34;</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_log.FileLogger.set_level"><code class="name flex">
+<span>def <span class="ident">set_level</span></span>(<span>self, loglevel)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_level(self, loglevel):
+    try:
+        numeric_level = int(loglevel)
+    except BaseException:
+        numeric_level = getattr(logging, loglevel.upper(), None)
+    if not isinstance(numeric_level, int):
+        raise ValueError(&#34;Invalid log level: %s&#34; % loglevel)
+
+    self.logger.setLevel(numeric_level)
+    filename = self.get_default_log_location()
+    print(&#34;See {} for {} level logs&#34;.format(filename, loglevel))</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_log.FileLogger.warning"><code class="name flex">
+<span>def <span class="ident">warning</span></span>(<span>self, msg, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def warning(self, msg, **kwargs):
+    self.logger.warning(msg, **kwargs)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="skm_pyutils.py_log.FileStdoutLogger"><code class="flex name class">
+<span>class <span class="ident">FileStdoutLogger</span></span>
+<span>(</span><span>name='stdout_logger')</span>
+</code></dt>
+<dd>
+<section class="desc"><p>A logger that prints to stdout and to a file.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class FileStdoutLogger:
+    &#34;&#34;&#34;A logger that prints to stdout and to a file.&#34;&#34;&#34;
+
+    def __init__(self, name=&#34;stdout_logger&#34;):
+        self.name = name
+        self.logger = None
+        self.create_logger()
+
+    def init_logging(self):
+        self.logger.setLevel(logging.INFO)
+        out_loc = self.get_default_log_location()
+        output_file_handler = logging.FileHandler(out_loc)
+        stdout_handler = logging.StreamHandler(sys.stdout)
+
+        self.logger.addHandler(output_file_handler)
+        self.logger.addHandler(stdout_handler)
+
+    def create_logger(self):
+        if self.logger is None:
+            self.logger = logging.getLogger(self.name)
+        if len(self.get_handlers()) == 0:
+            self.init_logging()
+
+    def print(self, msg):
+        self.logger.info(msg)
+
+    def get_default_log_location(self):
+        home = os.path.expanduser(&#34;~&#34;)
+        out_loc = os.path.join(home, &#34;.skm_python&#34;, f&#34;{self.name}.log&#34;)
+        os.makedirs(os.path.dirname(out_loc), exist_ok=True)
+
+        return out_loc
+
+    def read_log_file(self):
+        loc = self.get_default_log_location()
+        if os.path.exists(loc):
+            with open(loc, &#34;r&#34;) as f:
+                out = f.read().strip()
+            return out
+        else:
+            return &#34;No log file exists.&#34;
+
+    def clear_log_file(self):
+        # handlers = self.logger.handlers[:]
+        # for handler in handlers:
+        #     handler.close()
+        #     self.logger.removeHandler(handler)
+
+        loc = self.get_default_log_location()
+        if os.path.exists(loc):
+            open(loc, &#39;w&#39;).close()
+
+
+    def get_handlers(self):
+        return self.logger.handlers[:]</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="skm_pyutils.py_log.FileStdoutLogger.clear_log_file"><code class="name flex">
+<span>def <span class="ident">clear_log_file</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clear_log_file(self):
+    # handlers = self.logger.handlers[:]
+    # for handler in handlers:
+    #     handler.close()
+    #     self.logger.removeHandler(handler)
+
+    loc = self.get_default_log_location()
+    if os.path.exists(loc):
+        open(loc, &#39;w&#39;).close()</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_log.FileStdoutLogger.create_logger"><code class="name flex">
+<span>def <span class="ident">create_logger</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_logger(self):
+    if self.logger is None:
+        self.logger = logging.getLogger(self.name)
+    if len(self.get_handlers()) == 0:
+        self.init_logging()</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_log.FileStdoutLogger.get_default_log_location"><code class="name flex">
+<span>def <span class="ident">get_default_log_location</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_default_log_location(self):
+    home = os.path.expanduser(&#34;~&#34;)
+    out_loc = os.path.join(home, &#34;.skm_python&#34;, f&#34;{self.name}.log&#34;)
+    os.makedirs(os.path.dirname(out_loc), exist_ok=True)
+
+    return out_loc</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_log.FileStdoutLogger.get_handlers"><code class="name flex">
+<span>def <span class="ident">get_handlers</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_handlers(self):
+    return self.logger.handlers[:]</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_log.FileStdoutLogger.init_logging"><code class="name flex">
+<span>def <span class="ident">init_logging</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def init_logging(self):
+    self.logger.setLevel(logging.INFO)
+    out_loc = self.get_default_log_location()
+    output_file_handler = logging.FileHandler(out_loc)
+    stdout_handler = logging.StreamHandler(sys.stdout)
+
+    self.logger.addHandler(output_file_handler)
+    self.logger.addHandler(stdout_handler)</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_log.FileStdoutLogger.print"><code class="name flex">
+<span>def <span class="ident">print</span></span>(<span>self, msg)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def print(self, msg):
+    self.logger.info(msg)</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_log.FileStdoutLogger.read_log_file"><code class="name flex">
+<span>def <span class="ident">read_log_file</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read_log_file(self):
+    loc = self.get_default_log_location()
+    if os.path.exists(loc):
+        with open(loc, &#34;r&#34;) as f:
+            out = f.read().strip()
+        return out
+    else:
+        return &#34;No log file exists.&#34;</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -402,6 +1074,39 @@ If None is passed, uses the default excepthook in this module.</dd>
 <li><code><a title="skm_pyutils.py_log.log_exception" href="#skm_pyutils.py_log.log_exception">log_exception</a></code></li>
 <li><code><a title="skm_pyutils.py_log.override_excepthook" href="#skm_pyutils.py_log.override_excepthook">override_excepthook</a></code></li>
 <li><code><a title="skm_pyutils.py_log.setup_text_logging" href="#skm_pyutils.py_log.setup_text_logging">setup_text_logging</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="skm_pyutils.py_log.FileLogger" href="#skm_pyutils.py_log.FileLogger">FileLogger</a></code></h4>
+<ul class="">
+<li><code><a title="skm_pyutils.py_log.FileLogger.clear_log_file" href="#skm_pyutils.py_log.FileLogger.clear_log_file">clear_log_file</a></code></li>
+<li><code><a title="skm_pyutils.py_log.FileLogger.create_logger" href="#skm_pyutils.py_log.FileLogger.create_logger">create_logger</a></code></li>
+<li><code><a title="skm_pyutils.py_log.FileLogger.critical" href="#skm_pyutils.py_log.FileLogger.critical">critical</a></code></li>
+<li><code><a title="skm_pyutils.py_log.FileLogger.debug" href="#skm_pyutils.py_log.FileLogger.debug">debug</a></code></li>
+<li><code><a title="skm_pyutils.py_log.FileLogger.error" href="#skm_pyutils.py_log.FileLogger.error">error</a></code></li>
+<li><code><a title="skm_pyutils.py_log.FileLogger.get_default_log_location" href="#skm_pyutils.py_log.FileLogger.get_default_log_location">get_default_log_location</a></code></li>
+<li><code><a title="skm_pyutils.py_log.FileLogger.get_handlers" href="#skm_pyutils.py_log.FileLogger.get_handlers">get_handlers</a></code></li>
+<li><code><a title="skm_pyutils.py_log.FileLogger.info" href="#skm_pyutils.py_log.FileLogger.info">info</a></code></li>
+<li><code><a title="skm_pyutils.py_log.FileLogger.init_logging" href="#skm_pyutils.py_log.FileLogger.init_logging">init_logging</a></code></li>
+<li><code><a title="skm_pyutils.py_log.FileLogger.read_log_file" href="#skm_pyutils.py_log.FileLogger.read_log_file">read_log_file</a></code></li>
+<li><code><a title="skm_pyutils.py_log.FileLogger.set_level" href="#skm_pyutils.py_log.FileLogger.set_level">set_level</a></code></li>
+<li><code><a title="skm_pyutils.py_log.FileLogger.warning" href="#skm_pyutils.py_log.FileLogger.warning">warning</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="skm_pyutils.py_log.FileStdoutLogger" href="#skm_pyutils.py_log.FileStdoutLogger">FileStdoutLogger</a></code></h4>
+<ul class="">
+<li><code><a title="skm_pyutils.py_log.FileStdoutLogger.clear_log_file" href="#skm_pyutils.py_log.FileStdoutLogger.clear_log_file">clear_log_file</a></code></li>
+<li><code><a title="skm_pyutils.py_log.FileStdoutLogger.create_logger" href="#skm_pyutils.py_log.FileStdoutLogger.create_logger">create_logger</a></code></li>
+<li><code><a title="skm_pyutils.py_log.FileStdoutLogger.get_default_log_location" href="#skm_pyutils.py_log.FileStdoutLogger.get_default_log_location">get_default_log_location</a></code></li>
+<li><code><a title="skm_pyutils.py_log.FileStdoutLogger.get_handlers" href="#skm_pyutils.py_log.FileStdoutLogger.get_handlers">get_handlers</a></code></li>
+<li><code><a title="skm_pyutils.py_log.FileStdoutLogger.init_logging" href="#skm_pyutils.py_log.FileStdoutLogger.init_logging">init_logging</a></code></li>
+<li><code><a title="skm_pyutils.py_log.FileStdoutLogger.print" href="#skm_pyutils.py_log.FileStdoutLogger.print">print</a></code></li>
+<li><code><a title="skm_pyutils.py_log.FileStdoutLogger.read_log_file" href="#skm_pyutils.py_log.FileStdoutLogger.read_log_file">read_log_file</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

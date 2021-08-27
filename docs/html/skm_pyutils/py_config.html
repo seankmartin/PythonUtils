@@ -28,7 +28,6 @@
 <pre><code class="python">&#34;&#34;&#34;Config file and logging related utility functions.&#34;&#34;&#34;
 import os
 import sys
-import logging
 import configparser
 from pprint import pprint
 
@@ -50,6 +49,9 @@ def read_cfg(location, verbose=True):
         The python ConfigParser object after reading the cfg.
 
     &#34;&#34;&#34;
+    if not os.path.exists(location):
+        raise ValueError(f&#34;Config file {location} does not exist&#34;)
+
     config = configparser.ConfigParser()
     config.read(location)
 
@@ -160,7 +162,13 @@ def read_python(path, dirname_replacement=&#34;&#34;):
         &#34;__thisdirname__&#34;, normalise_path(os.path.dirname(path))
     )
     metadata = {}
-    exec(contents, {}, metadata)
+    try:
+        exec(contents, {}, metadata)
+    except Exception as e:
+        import traceback
+        print(&#34;QUITTING: An error occurred reading {}&#34;.format(path))
+        traceback.print_exc()
+        exit(-1)
     metadata = {k.lower(): v for (k, v) in metadata.items()}
     return metadata
 
@@ -334,6 +342,9 @@ def split_dict(in_dict, index):
         The python ConfigParser object after reading the cfg.
 
     &#34;&#34;&#34;
+    if not os.path.exists(location):
+        raise ValueError(f&#34;Config file {location} does not exist&#34;)
+
     config = configparser.ConfigParser()
     config.read(location)
 
@@ -416,7 +427,13 @@ By default, None will replace <strong>dirname</strong> with dirname of path.</dd
         &#34;__thisdirname__&#34;, normalise_path(os.path.dirname(path))
     )
     metadata = {}
-    exec(contents, {}, metadata)
+    try:
+        exec(contents, {}, metadata)
+    except Exception as e:
+        import traceback
+        print(&#34;QUITTING: An error occurred reading {}&#34;.format(path))
+        traceback.print_exc()
+        exit(-1)
     metadata = {k.lower(): v for (k, v) in metadata.items()}
     return metadata</code></pre>
 </details>

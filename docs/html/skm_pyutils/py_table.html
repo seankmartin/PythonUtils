@@ -26,6 +26,7 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Utilities for pandas dataframes.&#34;&#34;&#34;
+import os
 
 import pandas as pd
 
@@ -63,14 +64,79 @@ def list_to_df(in_list, transpose=False, headers=None):
 
     &#34;&#34;&#34;
     if headers is None:
-        headers = [&#34;V{}&#34;.format(i) for i in range(len(in_list[0]))]
+        if not transpose:
+            headers = [&#34;V{}&#34;.format(i) for i in range(len(in_list[0]))]
+        else:
+            headers = [&#34;V{}&#34;.format(i) for i in range(len(in_list))]
 
     if transpose:
         df = pd.DataFrame(in_list).T
         df.columns = headers
     else:
         df = pd.DataFrame.from_records(in_list, columns=headers)
-    return df</code></pre>
+    return df
+
+
+def df_from_file(filename):
+    &#34;&#34;&#34;
+    Read a pandas.DataFrame from filename.
+
+    Parameters
+    ----------
+    filename : str
+        The path to the file to read
+
+    Returns
+    -------
+    pandas.DataFrame
+        The read data
+
+    &#34;&#34;&#34;
+    ext = os.path.splitext(filename)[1]
+    if ext == &#34;.psv&#34;:
+        df = pd.read_csv(filename, delimiter=&#34;|&#34;)
+    elif ext == &#39;.csv&#39;:
+        df = pd.read_csv(filename)
+    elif ext == &#39;.xlsx&#39;:
+        df = pd.read_excel(filename)
+    else:
+        raise ValueError(
+            f&#34;Unsupported file extension {ext}&#34;
+        )
+    return df
+
+def df_to_file(df, filename, index=False, **kwargs):
+    &#34;&#34;&#34;
+    Save a pandas.DataFrame to filename.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The input dataframe to save.
+    filename : str
+        The path of the file to save to.
+    index : bool
+        Whether to write row names, by default False.
+    kwargs : keyword arguments
+        Passed to pandas method.
+
+    Returns
+    -------
+    None
+
+    &#34;&#34;&#34;
+    ext = os.path.splitext(filename)[1]
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    if ext == &#34;.psv&#34;:
+        df.to_csv(filename, sep=&#34;|&#34;, index=index, **kwargs)
+    elif ext == &#39;.csv&#39;:
+        df.to_csv(filename, sep=&#34;,&#34;, index=index, **kwargs)
+    elif ext == &#39;.xlsx&#39;:
+        df.to_excel(filename, index=index, **kwargs)
+    else:
+        raise ValueError(
+            f&#34;Unsupported file extension {ext}&#34;
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -80,6 +146,113 @@ def list_to_df(in_list, transpose=False, headers=None):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="skm_pyutils.py_table.df_from_file"><code class="name flex">
+<span>def <span class="ident">df_from_file</span></span>(<span>filename)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Read a pandas.DataFrame from filename.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>filename</code></strong> :&ensp;<code>str</code></dt>
+<dd>The path to the file to read</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>pandas.DataFrame</code></dt>
+<dd>The read data</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def df_from_file(filename):
+    &#34;&#34;&#34;
+    Read a pandas.DataFrame from filename.
+
+    Parameters
+    ----------
+    filename : str
+        The path to the file to read
+
+    Returns
+    -------
+    pandas.DataFrame
+        The read data
+
+    &#34;&#34;&#34;
+    ext = os.path.splitext(filename)[1]
+    if ext == &#34;.psv&#34;:
+        df = pd.read_csv(filename, delimiter=&#34;|&#34;)
+    elif ext == &#39;.csv&#39;:
+        df = pd.read_csv(filename)
+    elif ext == &#39;.xlsx&#39;:
+        df = pd.read_excel(filename)
+    else:
+        raise ValueError(
+            f&#34;Unsupported file extension {ext}&#34;
+        )
+    return df</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.py_table.df_to_file"><code class="name flex">
+<span>def <span class="ident">df_to_file</span></span>(<span>df, filename, index=False, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Save a pandas.DataFrame to filename.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>df</code></strong> :&ensp;<code>pandas.DataFrame</code></dt>
+<dd>The input dataframe to save.</dd>
+<dt><strong><code>filename</code></strong> :&ensp;<code>str</code></dt>
+<dd>The path of the file to save to.</dd>
+<dt><strong><code>index</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Whether to write row names, by default False.</dd>
+<dt><strong><code>kwargs</code></strong> :&ensp;<code>keyword</code> <code>arguments</code></dt>
+<dd>Passed to pandas method.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>None</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def df_to_file(df, filename, index=False, **kwargs):
+    &#34;&#34;&#34;
+    Save a pandas.DataFrame to filename.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The input dataframe to save.
+    filename : str
+        The path of the file to save to.
+    index : bool
+        Whether to write row names, by default False.
+    kwargs : keyword arguments
+        Passed to pandas method.
+
+    Returns
+    -------
+    None
+
+    &#34;&#34;&#34;
+    ext = os.path.splitext(filename)[1]
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    if ext == &#34;.psv&#34;:
+        df.to_csv(filename, sep=&#34;|&#34;, index=index, **kwargs)
+    elif ext == &#39;.csv&#39;:
+        df.to_csv(filename, sep=&#34;,&#34;, index=index, **kwargs)
+    elif ext == &#39;.xlsx&#39;:
+        df.to_excel(filename, index=index, **kwargs)
+    else:
+        raise ValueError(
+            f&#34;Unsupported file extension {ext}&#34;
+        )</code></pre>
+</details>
+</dd>
 <dt id="skm_pyutils.py_table.list_to_df"><code class="name flex">
 <span>def <span class="ident">list_to_df</span></span>(<span>in_list, transpose=False, headers=None)</span>
 </code></dt>
@@ -149,7 +322,10 @@ Otherwise, the list is assumed to be like
 
     &#34;&#34;&#34;
     if headers is None:
-        headers = [&#34;V{}&#34;.format(i) for i in range(len(in_list[0]))]
+        if not transpose:
+            headers = [&#34;V{}&#34;.format(i) for i in range(len(in_list[0]))]
+        else:
+            headers = [&#34;V{}&#34;.format(i) for i in range(len(in_list))]
 
     if transpose:
         df = pd.DataFrame(in_list).T
@@ -177,6 +353,8 @@ Otherwise, the list is assumed to be like
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="skm_pyutils.py_table.df_from_file" href="#skm_pyutils.py_table.df_from_file">df_from_file</a></code></li>
+<li><code><a title="skm_pyutils.py_table.df_to_file" href="#skm_pyutils.py_table.df_to_file">df_to_file</a></code></li>
 <li><code><a title="skm_pyutils.py_table.list_to_df" href="#skm_pyutils.py_table.list_to_df">list_to_df</a></code></li>
 </ul>
 </li>
