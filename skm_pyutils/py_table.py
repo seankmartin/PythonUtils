@@ -61,7 +61,7 @@ def df_from_file(filename):
 
     Returns
     -------
-    pandas.DataFrame
+    pandas.DataFrame or TextParser
         The read data
 
     """
