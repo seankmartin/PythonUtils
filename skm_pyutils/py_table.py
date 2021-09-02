@@ -68,15 +68,14 @@ def df_from_file(filename):
     ext = os.path.splitext(filename)[1]
     if ext == ".psv":
         df = pd.read_csv(filename, delimiter="|")
-    elif ext == '.csv':
+    elif ext == ".csv":
         df = pd.read_csv(filename)
-    elif ext == '.xlsx':
+    elif ext == ".xlsx":
         df = pd.read_excel(filename)
     else:
-        raise ValueError(
-            f"Unsupported file extension {ext}"
-        )
+        raise ValueError(f"Unsupported file extension {ext}")
     return df
+
 
 def df_to_file(df, filename, index=False, **kwargs):
     """
@@ -98,15 +97,66 @@ def df_to_file(df, filename, index=False, **kwargs):
     None
 
     """
+
+    def get_to_retry():
+        print("{} may currently be in use, try closing it".format(filename))
+        retry = True
+        continue_ = True
+        while retry:
+            done = input("When closed, please enter y to retry, or q to quit:\n")
+            if len(done) == 0:
+                retry = True
+            elif done.strip().lower() == "y":
+                retry = False
+            elif done.strip().lower() == "q":
+                retry = False
+                continue_ = False
+        if continue_:
+            print("Retrying saving to {}".format(filename))
+        return continue_
+
     ext = os.path.splitext(filename)[1]
     os.makedirs(os.path.dirname(filename), exist_ok=True)
     if ext == ".psv":
-        df.to_csv(filename, sep="|", index=index, **kwargs)
-    elif ext == '.csv':
-        df.to_csv(filename, sep=",", index=index, **kwargs)
-    elif ext == '.xlsx':
-        df.to_excel(filename, index=index, **kwargs)
+        try:
+            df.to_csv(filename, sep="|", index=index, **kwargs)
+        except PermissionError:
+            continue_ = get_to_retry()
+            if continue_:
+                df.to_csv(filename, sep="|", index=index, **kwargs)
+    elif ext == ".csv":
+        try:
+            df.to_csv(filename, sep=",", index=index, **kwargs)
+        except PermissionError:
+            continue_ = get_to_retry()
+            if continue_:
+                df.to_csv(filename, sep=",", index=index, **kwargs)
+    elif ext == ".xlsx":
+        try:
+            df.to_excel(filename, index=index, **kwargs)
+        except PermissionError:
+            continue_ = get_to_retry()
+            if continue_:
+                df.to_excel(filename, index=index, **kwargs)
     else:
-        raise ValueError(
-            f"Unsupported file extension {ext}"
-        )
+        raise ValueError(f"Unsupported file extension {ext}")
+
+
+def df_subset_from_rows(df, rows):
+    """
+    Get a subset of a dataframe based on row indices.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The dataframe to subset from.
+    rows : list-like of int
+        The rows to grab.
+    
+    Returns
+    -------
+    pandas.DataFrame
+
+    """
+    df_subset = df.iloc[rows].copy().reset_index()
+    return df_subset
