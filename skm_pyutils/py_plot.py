@@ -246,3 +246,7 @@ class UnicodeGrabber(object):
     @staticmethod
     def get(char, default=""):
         return UnicodeGrabber.char_dict.get(char, default)
+
+    @staticmethod
+    def to_sub(num):
+        return chr(int(f"208{num}", 16))
