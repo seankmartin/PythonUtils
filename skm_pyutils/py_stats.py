@@ -6,6 +6,115 @@ import pingouin
 from skm_pyutils.py_plot import UnicodeGrabber
 
 
+def corr(x, y, fmt_kwargs, **kwargs):
+    """
+    Compute correlation between x and y.
+
+    Also returns a formatted string representation.
+
+    Parameters
+    ----------
+    x : array_like
+        First set of observations.
+    y: array_like
+        Second set of observations.
+    fmt_kwargs : dict
+        A dictionary of kwargs to control the formatting.
+        value - the name of the values being tested
+        unit - the unit of the values being tested
+        group1 - the name of x
+        group2 - the name of y
+        signif - the significance level (float)
+        n_decimals - the number of decimal places to print (int)
+        n_pdecimals - the number of decimal places to print for p (int)
+        show_quartiles - include quartiles in report (bool)
+        do_print - print the report string (bool)
+    **kwargs : keyword arguments
+        These are passed to pingouin.corr
+
+    Returns
+    -------
+    pd.DataFrame
+        The dataframe of results
+    str
+        A string to describe the test result for reporting
+
+    See also
+    --------
+    pinouin.corr
+
+    """
+    vname = fmt_kwargs.get("value", "values")
+    unit_name = fmt_kwargs.get("unit", "")
+    if unit_name != "":
+        unit_name = " " + unit_name + ", "
+    else:
+        unit_name = ", "
+    group1_name = fmt_kwargs.get("group1", "1")
+    group2_name = fmt_kwargs.get("group2", "2")
+    signif_level = fmt_kwargs.get("signif", 0.05)
+    n_decimals = fmt_kwargs.get("n_decimals", 2)
+    n_pdecimals = fmt_kwargs.get("n_pdecimals", 3)
+    show_quartiles = fmt_kwargs.get("show_quartiles", True)
+    do_print = fmt_kwargs.get("do_print", True)
+
+    sided = kwargs.get("alternative", "two-sided")
+    method = kwargs.get("method", "pearson")
+
+    results_df = pingouin.corr(x, y, **kwargs)
+
+    n = results_df["n"].values[0]
+    r = np.round(results_df["r"].values[0], n_decimals)
+    P = np.round(results_df["p-val"].values[0], n_pdecimals)
+    power = np.round(results_df["power"].values[0], n_decimals)
+    ci = np.round(np.array(results_df["CI95%"].values[0]), n_decimals)
+
+    if method == "pearson":
+        co_eff_name = "r"
+        corr_name = "Pearson"
+    elif method == "spearman":
+        co_eff_name = "\u03A1"
+        corr_name = "spearman"
+    elif method == "kendall":
+        co_eff_name = "\u03A4"
+        corr_name = "Kendall"
+
+    if r < 0:
+        type_corr = "negative"
+    if r == 0:
+        type_corr = "no"
+    if r > 0:
+        type_corr = "positive"
+
+    if sided == "two-sided":
+        tailed = "(two-tailed)."
+    else:
+        tailed = "(one-tailed)."
+
+    if P < signif_level:
+        differ_str = "was significant"
+    else:
+        differ_str = "was not significant"
+
+    if show_quartiles:
+        result_str = (
+            f"There was a {type_corr} {corr_name} correlation of {co_eff_name} = {r} [{ci[0]}, {ci[1]}] 95% CI"
+        )
+    else:
+        result_str = (
+            f"There was a {type_corr} {corr_name} correlation of {co_eff_name} = {r}"
+        )
+    relation_str = f" between {group1_name} and {group2_name} {vname}"
+    stats_str = f"; this {differ_str} with \u0070 = {P}, N = {n} and test power of {power} {tailed}"
+
+    final_str = result_str + relation_str + stats_str
+
+    if do_print:
+        print(final_str)
+
+    return results_df, final_str
+
+
 def mwu(x, y, fmt_kwargs, **kwargs):
     """
     Compute the Mann-Whitney U Test.
