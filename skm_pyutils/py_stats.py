@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from skm_pyutils.py_plot import UnicodeGrabber
+from skm_pyutils.py_table import list_to_df
 
 
 def corr(x, y, fmt_kwargs=None, do_plot=False, ax=None, **kwargs):
@@ -113,9 +114,7 @@ def corr(x, y, fmt_kwargs=None, do_plot=False, ax=None, **kwargs):
         differ_str = "was not significant"
 
     if show_quartiles:
-        result_str = (
-            f"There was a {type_corr} {corr_name} correlation of {co_eff_name} = {r} [{ci[0]}, {ci[1]}] 95% CI"
-        )
+        result_str = f"There was a {type_corr} {corr_name} correlation of {co_eff_name} = {r} [{ci[0]}, {ci[1]}] 95% CI"
     else:
         result_str = (
             f"There was a {type_corr} {corr_name} correlation of {co_eff_name} = {r}"
@@ -170,7 +169,7 @@ def corr(x, y, fmt_kwargs=None, do_plot=False, ax=None, **kwargs):
     return results
 
 
-def mwu(x, y, fmt_kwargs=None, do_plot=False, **kwargs):
+def mwu(x, y, fmt_kwargs=None, do_plot=False, ax=None, **kwargs):
     """
     Compute the Mann-Whitney U Test.
 
@@ -193,15 +192,22 @@ def mwu(x, y, fmt_kwargs=None, do_plot=False, **kwargs):
         n_pdecimals - the number of decimal places to print for p (int)
         show_quartiles - include quartiles in report (bool)
         do_print - print the report string (bool)
+    do_plot : bool, optional
+        Whether or not to plot the result.
+    ax : axes object, optional
+        An axes to plot into.
     **kwargs : keyword arguments
-        These are passed to pingouin.mwu which then passes to scipy.stats.mannwhitneyu
+        These are passed to pingouin.corr
 
     Returns
     -------
-    pd.DataFrame
-        The dataframe of results
-    str
-        A string to describe the test result for reporting
+    dict with keys:
+        "results" : pd.DataFrame
+            The dataframe of results
+        "output" : str
+            A string to describe the test result for reporting
+        "figure" : matplotlib.pyplot.figure or None
+            The returned figure plotted into.
 
     See also
     --------
@@ -281,4 +287,42 @@ def mwu(x, y, fmt_kwargs=None, do_plot=False, **kwargs):
     if do_print:
         print(results_str)
 
-    return results_df, results_str
+    figure = None
+    if do_plot:
+
+        palette = fmt_kwargs.get("palette", "dark")
+        context = fmt_kwargs.get("context", "paper")
+        sns.set_palette(palette)
+        if context == "paper":
+            sns.set_context(
+                "paper", font_scale=1.4, rc={"lines.linewidth": 3.2},
+            )
+        else:
+            sns.set_context(context)
+
+        if ax is None:
+            figure, ax = plt.subplots()
+        despine = fmt_kwargs.get("despine", True)
+        trim = fmt_kwargs.get("trim", True)
+        offset = fmt_kwargs.get("offset", None)
+
+        df_list = []
+        for val in x:
+            df_list.append([val, group1_name])
+        for val in y:
+            df_list.append([val, group2_name])
+
+        df = list_to_df(df_list, headers=[vname, "group"])
+        sns.kdeplot(data=df, x=vname, hue="group", multiple="stack", ax=ax)
+
+        ax.set_xlabel(vname)
+        if despine:
+            sns.despine(offset=offset, trim=trim)
+
+    results = {
+        "results": results_df,
+        "output": results_str,
+        "figure": figure,
+    }
+
+    return results
