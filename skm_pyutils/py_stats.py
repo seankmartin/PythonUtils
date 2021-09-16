@@ -286,10 +286,10 @@ def mwu(x, y, fmt_kwargs=None, do_plot=False, ax=None, **kwargs):
     U = results_df["U-val"].values[0]
     P = np.round(results_df["p-val"].values[0], n_pdecimals)
     cl = np.round(results_df["CLES"].values[0], n_decimals)
-    median1 = np.round(np.median(x), n_decimals)
-    lowerq1, higherq1 = np.round(np.percentile(x, [25, 75]), n_decimals)
-    lowerq2, higherq2 = np.round(np.percentile(y, [25, 75]), n_decimals)
-    median2 = np.round(np.median(y), n_decimals)
+    median1 = np.round(np.nanmedian(x), n_decimals)
+    lowerq1, higherq1 = np.round(np.nanpercentile(x, [25, 75]), n_decimals)
+    lowerq2, higherq2 = np.round(np.nanpercentile(y, [25, 75]), n_decimals)
+    median2 = np.round(np.nanmedian(y), n_decimals)
 
     sample_size1 = len(x)
     sample_size2 = len(y)
@@ -418,10 +418,10 @@ def wilcoxon(x, y, fmt_kwargs=None, do_plot=False, ax=None, **kwargs):
     U = results_df["W-val"].values[0]
     P = np.round(results_df["p-val"].values[0], n_pdecimals)
     cl = np.round(results_df["CLES"].values[0], n_decimals)
-    median1 = np.round(np.median(x), n_decimals)
-    lowerq1, higherq1 = np.round(np.percentile(x, [25, 75]), n_decimals)
-    lowerq2, higherq2 = np.round(np.percentile(y, [25, 75]), n_decimals)
-    median2 = np.round(np.median(y), n_decimals)
+    median1 = np.round(np.nanmedian(x), n_decimals)
+    lowerq1, higherq1 = np.round(np.nanpercentile(x, [25, 75]), n_decimals)
+    lowerq2, higherq2 = np.round(np.nanpercentile(y, [25, 75]), n_decimals)
+    median2 = np.round(np.nanmedian(y), n_decimals)
 
     sample_size1 = len(x)
     sample_size2 = len(y)
