@@ -470,7 +470,7 @@ def wilcoxon(x, y, fmt_kwargs=None, do_plot=False, ax=None, **kwargs):
 
     figure = None
     if do_plot:
-        figure = plot_corr(x, y, ax=ax, **fmt_kwargs)
+        figure = plot_dists(x, y, ax=ax, **fmt_kwargs)
 
     results = {
         "results": results_df,
