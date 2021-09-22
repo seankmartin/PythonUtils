@@ -1,7 +1,5 @@
 """Utilities for plotting with matplotlib."""
 
-"""Plotting functions for the bvmpc module."""
-
 import os
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
