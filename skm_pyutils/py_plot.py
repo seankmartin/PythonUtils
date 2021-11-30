@@ -191,7 +191,7 @@ class GridFig:
 
         else:
         1   3   5   7   9   11
-        2   3   6   8   10  12  ...
+        2   4   6   8   10  12  ...
 
         """
         if self.along_rows:
