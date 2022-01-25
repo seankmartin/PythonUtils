@@ -1,7 +1,34 @@
 """Utilities for code performance profiling."""
 import os
+import io
 import argparse
 import pstats
+import cProfile
+
+def profileit(name):
+    """
+    Decorator to profile code performance.
+
+    Usage:
+    @profileit("profile_for_func1_001");
+    def func1(...)
+
+    See https://stackoverflow.com/questions/5375624/a-decorator-that-profiles-a-method-call-and-logs-the-profiling-result/5376616
+
+    """
+    def inner(func):
+        def wrapper(*args, **kwargs):
+            prof = cProfile.Profile()
+            retval = prof.runcall(func, *args, **kwargs)
+            s = io.StringIO()
+            sortby = pstats.SortKey.CUMULATIVE
+            ps = pstats.Stats(prof, stream=s).strip_dirs().sort_stats(sortby)
+            ps.print_stats()
+            with open(name, "w") as f:
+                f.write(s.getvalue())
+            return retval
+        return wrapper
+    return inner
 
 
 def default_stats(profile_location):
