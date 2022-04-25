@@ -54,11 +54,14 @@ def save_mixed_dict_to_csv(in_dict, out_dir, out_name="results.csv", save=True):
 
     for key, val in in_dict.items():
         if isinstance(val, dict):
-            out_str = ""
-            for k2, val2 in val.items():
-                name = "{} -- {}".format(key, k2)
-                out_str += arr_to_str(name, val2) + "\n"
-            out_str = out_str[:-1]
+            if len(val) == 0:
+                out_str = "{},Empty".format(key)
+            else:
+                out_str = ""
+                for k2, val2 in val.items():
+                    name = "{} -- {}".format(key, k2)
+                    out_str += arr_to_str(name, val2) + "\n"
+                out_str = out_str[:-1]
         elif isinstance(val, np.ndarray):
             out_str = arr_to_str(key, val.flatten())
         elif isinstance(val, list):
