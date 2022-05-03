@@ -1,11 +1,12 @@
 """Utilities for plotting with matplotlib."""
 
-import os
-import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
-import seaborn as sns
 import colorsys
+import os
 from collections import OrderedDict
+
+import matplotlib.gridspec as gridspec
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 from skm_pyutils.py_path import make_path_if_not_exists
 
@@ -46,8 +47,8 @@ class GroupManager:
             self.index = 0
 
     def test_plot(self):
-        from scipy.stats import norm
         import numpy as np
+        from scipy.stats import norm
 
         fig, ax = plt.subplots()
         x_axis = np.arange(-15, 5, 0.001)
@@ -96,8 +97,8 @@ class ColorManager:
         return self.colors[index]
 
     def test_plot(self):
-        from scipy.stats import norm
         import numpy as np
+        from scipy.stats import norm
 
         fig, ax = plt.subplots()
         x_axis = np.arange(-15, 5, 0.001)
@@ -122,7 +123,7 @@ class GridFig:
     def __init__(
         self,
         rows,
-        cols=4,
+        cols=None,
         size_multiplier_x=5,
         size_multiplier_y=5,
         wspace=0.3,
@@ -132,10 +133,15 @@ class GridFig:
     ):
         """
         Set up the grid specifications.
+    
+        If only rows is passed, the number of columns and rows
+        are automatically determined to be close to a square.
 
         size_multiplier, wspace, and hspace are used for spacing
 
         """
+        if cols is None:
+            rows, cols = self.auto_determine_grid(rows)
         self.fig = plt.figure(
             figsize=(cols * size_multiplier_x, rows * size_multiplier_y),
             tight_layout=tight_layout,
@@ -145,6 +151,12 @@ class GridFig:
         self.rows = rows
         self.cols = cols
         self.along_rows = traverse_rows
+
+    def auto_determine_grid(self, rows):
+        closest_sqrt = 1
+        while (closest_sqrt * closest_sqrt) < rows:
+            closest_sqrt += 1
+        return closest_sqrt, closest_sqrt
 
     def get_ax(self, row_idx, col_idx, circular=False):
         """Add subplot with standard 1x1 gs -> returns ax."""
@@ -230,11 +242,13 @@ class GridFig:
         if self.idx == self.rows * self.cols:
             self.idx = 0
 
+
 class UnicodeGrabber(object):
     """This is a fully static class to get unicode chars for plotting."""
+
     char_dict = {
-        "micro": u"\u00B5",
-        "pow2": u"\u00B2",
+        "micro": "\u00B5",
+        "pow2": "\u00B2",
     }
 
     @staticmethod
