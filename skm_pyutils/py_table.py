@@ -160,3 +160,13 @@ def df_subset_from_rows(df, rows):
     """
     df_subset = df.iloc[rows].copy().reset_index()
     return df_subset
+
+
+def show_interactive_table(table, notebook=False) -> None:
+    import dtale
+
+    ## TODO maybe should have a config for notebook version
+    if notebook:
+        dtale.show(table)
+    else:
+        dtale.show(table).open_browser()
