@@ -3,7 +3,7 @@ This module handles printing items such as dicts.
 
 One could alternatively use pprint for some of these.
 """
-from pprint import pformat
+import rich
 
 
 def walk_dict(d, depth=0):
@@ -43,3 +43,6 @@ def print_h5(file_location):
         print("\n--------AVAILABLE INFO--------")
         walk_dict(f)
         print()
+
+
+inspect = rich.inspect

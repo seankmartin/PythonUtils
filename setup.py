@@ -16,7 +16,7 @@ URL = "https://github.com/seankmartin/PythonUtils"
 DOWNLOAD_URL = "https://github.com/seankmartin/PythonUtils/archive/0.1.4.tar.gz"
 VERSION = "0.1.4"
 
-INSTALL_REQUIRES = ["numpy", "matplotlib", "seaborn", "PyPDF2"]
+INSTALL_REQUIRES = ["numpy", "matplotlib", "seaborn", "PyPDF2", "rich"]
 
 PACKAGES = ["skm_pyutils"]
 
@@ -37,7 +37,7 @@ ENTRY_POINTS = {
     "console_scripts": [
         "pdf-merge = skm_pyutils.py_pdf:cli_entry",
         "dir-list = skm_pyutils.py_path:cli_entry",
-        "copy-files = skm_pyutils.py_path:cli_copy_files_in_dir"
+        "copy-files = skm_pyutils.py_path:cli_copy_files_in_dir",
     ]
 }
 
