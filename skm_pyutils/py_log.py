@@ -3,9 +3,11 @@ Logging related functions.
 """
 import datetime
 import logging
-import traceback
 import os
 import sys
+import traceback
+
+import psutil
 
 from skm_pyutils.py_path import make_path_if_not_exists
 
@@ -220,8 +222,7 @@ class FileStdoutLogger:
 
         loc = self.get_default_log_location()
         if os.path.exists(loc):
-            open(loc, 'w').close()
-
+            open(loc, "w").close()
 
     def get_handlers(self):
         return self.logger.handlers[:]
@@ -301,3 +302,24 @@ class FileLogger:
 
     def get_handlers(self):
         return self.logger.handlers[:]
+
+
+def print_memory_usage(as_string=False) -> str:
+    """
+    Print memory usage information
+    
+    Parameters
+    ----------
+    as_string : bool, optional
+        Just return the string representation, don't print.
+        By default, False.
+    
+    Returns
+    -------
+    usage : str
+        String about memory usage
+    """
+    str_ = f"RAM memory usage stats: {psutil.virtual_memory()}"
+    if not as_string:
+        print(str_)
+    return str_
