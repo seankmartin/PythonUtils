@@ -304,7 +304,7 @@ class FileLogger:
         return self.logger.handlers[:]
 
 
-def print_memory_usage(as_string=False) -> str:
+def print_memory_usage(as_string: bool=False) -> str:
     """
     Print memory usage information
     
