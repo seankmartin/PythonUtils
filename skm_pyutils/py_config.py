@@ -2,6 +2,8 @@
 import os
 import sys
 import configparser
+import yaml
+import json
 from pprint import pprint
 
 
@@ -145,6 +147,16 @@ def read_python(path, dirname_replacement=""):
     metadata = {k.lower(): v for (k, v) in metadata.items()}
     return metadata
 
+def read_yaml(path):
+    with open(path, 'r') as stream:
+        parsed_yaml=yaml.safe_load(stream)
+    return parsed_yaml
+
+
+def read_json(path):
+    with open(path, 'r') as stream:
+        parsed_json = json.load(stream)
+    return parsed_json
 
 def split_dict(in_dict, index):
     """
