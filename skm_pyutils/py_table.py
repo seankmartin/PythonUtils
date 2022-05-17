@@ -194,6 +194,8 @@ def filter_table(table: "pd.DataFrame", filter_dict: "dict[str, list]", and_: "b
         The filtered_dataframe
 
     """
+    if len(filter_dict) == 0:
+        return table
     filters = []
     for k, v in filter_dict.items():
         filters.append(table[k].isin(v))
