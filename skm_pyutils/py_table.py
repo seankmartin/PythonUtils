@@ -1,6 +1,7 @@
 """Utilities for pandas dataframes."""
 import os
 
+import numpy as np
 import pandas as pd
 
 
@@ -170,3 +171,36 @@ def show_interactive_table(table, notebook=False) -> None:
         dtale.show(table)
     else:
         dtale.show(table).open_browser()
+
+
+def filter_table(table: "pd.DataFrame", filter_dict: "dict[str, list]", and_: "bool" = True) -> "pd.DataFrame":
+    """
+    Filter a table based on a dictionary with possible values.
+    
+    Parameters
+    ----------
+    table: pd.DataFrame
+        The table to filter
+    filter_dict: dict[str, list]
+        The dictionary to filter with.
+        key = column in df, val = possible values for that column
+    and_: bool, optional
+        Whether to combine with logical_and or with logical_or,
+        By default logical_and.
+    
+    Returns
+    -------
+    filtered_dataframe : pd.DataFrame
+        The filtered_dataframe
+
+    """
+    filters = []
+    for k, v in filter_dict.items():
+        filters.append(table[k].isin(v))
+    if and_:
+        full_mask = np.logical_and.reduce(np.array(filters))
+    else:
+        full_mask = np.logical_or.reduce(np.array(filters))
+    filtered_table = table[full_mask]
+    return filtered_table
+    
