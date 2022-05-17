@@ -1,10 +1,11 @@
 """Config file and logging related utility functions."""
+import configparser
+import json
 import os
 import sys
-import configparser
-import yaml
-import json
 from pprint import pprint
+
+import yaml
 
 
 def read_cfg(location, verbose=True):
@@ -99,8 +100,10 @@ def read_python(path, dirname_replacement=""):
 
     Note
     ----
-    The string "__dirname__" is magic and will be replaced by the
+    The string "__thisdirname__" is magic and will be replaced by the
     absolute path to the directory containing the script.
+    The string "__dirname__" is also magic and will be replaced by
+    the value of dirname_replacement.
 
     Parameters
     ----------

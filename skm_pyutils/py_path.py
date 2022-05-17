@@ -1,9 +1,10 @@
 """Path related utility functions."""
+import argparse
 import os
 import re
-import argparse
 import shutil
 from collections import OrderedDict
+from pprint import pformat
 
 from skm_pyutils.py_config import parse_args
 
@@ -297,6 +298,77 @@ def cli_entry():
     else:
         raise ValueError("Please pass a valid directory")
 
+def remove_empty_dirs_and_caches(dir_list: "list[str]") -> "list[str]":
+    """Remove empty directories and caches from a list of directories."""
+    possible_dirs = [
+        d for d in dir_list if ("__pycache__" not in d) and (d != "")
+    ]
+
+    dirs = []
+    for d in possible_dirs:
+        filenames = next(os.walk(d), (None, None, []))[2]
+        if len(filenames) > 0:
+            dirs.append(d)
+
+    return dirs
+
+def interactive_refilt(start_dir, starting_filt=None, return_absolute=True):
+    """
+    Launch an interactive prompt to select regex filters.
+
+    Parameters
+    ----------
+    start_dir : str
+        Where to start the search from.
+    starting_filt : list of str, optional
+        An optional list of filters to start with
+    return_absolute : bool, optional
+        Return the absolute path to the directories.
+
+    Returns
+    -------
+    re_filt : list of str
+        The final list of regex filters chosen by the user.
+    dirs : list of str
+        The final list of directories that would be written to.
+
+    """
+    def get_directories(re_filters):
+        matched_dirs = get_dirs_matching_regex(
+        start_dir, re_filters=re_filters, return_absolute=return_absolute
+        )
+        filtered_dirs = remove_empty_dirs_and_caches(matched_dirs)
+        locations = pformat(filtered_dirs, width=200)
+        print(f"Regex {re_filters} finds {len(locations)} directories:\n{locations}")
+
+    re_filt = ""
+    if starting_filt == []:
+        starting_filt = None
+    dirs = get_directories(starting_filt)
+    while True:
+        this_re_filt = input(
+            "Please enter the regexes seperated by RE_SEP to test or"
+            + " ok to continue with the current selection"
+            + ", or exit to kill the whole program:\n"
+        )
+        if this_re_filt.lower().strip() == "exit":
+            exit(-1)
+        done = this_re_filt.lower().strip() == "ok"
+        if done:
+            break
+        if this_re_filt == "":
+            re_filt = None
+        else:
+            re_filt = this_re_filt.split(" RE_SEP ")
+        dirs = get_directories(re_filt)
+
+    if re_filt == "":
+        re_filt = starting_filt
+        if re_filt is None:
+            re_filt = []
+
+    print("The final regex was: {}".format(re_filt))
+    return re_filt, dirs
 
 def cli_copy_files_in_dir():
     parser = argparse.ArgumentParser(description="Directory list command line")
