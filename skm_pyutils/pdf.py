@@ -1,13 +1,13 @@
 """PDF file related utilities."""
 
+import argparse
 import os
 from datetime import datetime
-import argparse
 
 from PyPDF2 import PdfFileMerger
 
-from skm_pyutils.py_path import get_all_files_in_dir
-from skm_pyutils.py_config import parse_args
+from skm_pyutils.config import parse_args
+from skm_pyutils.path import get_all_files_in_dir
 
 
 def pdf_cat(input_files, output_location):

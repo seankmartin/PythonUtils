@@ -1,11 +1,12 @@
 """Utilities for saving structures to disk."""
-import os
 import csv
+import os
 
 import numpy as np
 
-from skm_pyutils.py_path import make_path_if_not_exists
-from skm_pyutils.py_log import log_exception
+from skm_pyutils.log import log_exception
+from skm_pyutils.path import make_path_if_not_exists
+
 
 def val_to_str(val):
     if isinstance(val, str):

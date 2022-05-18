@@ -6,7 +6,7 @@ import shutil
 from collections import OrderedDict
 from pprint import pformat
 
-from skm_pyutils.py_config import parse_args
+from skm_pyutils.config import parse_args
 
 
 def make_path_if_not_exists(fname):

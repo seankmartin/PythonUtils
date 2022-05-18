@@ -8,7 +8,7 @@ import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from skm_pyutils.py_path import make_path_if_not_exists
+from skm_pyutils.path import make_path_if_not_exists
 
 
 class GroupManager:

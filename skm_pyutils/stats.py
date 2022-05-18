@@ -1,12 +1,13 @@
 """Statistics functions and paper reporting."""
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pingouin
-import matplotlib.pyplot as plt
 import seaborn as sns
 
-from skm_pyutils.py_plot import UnicodeGrabber
-from skm_pyutils.py_table import list_to_df
+from skm_pyutils.plot import UnicodeGrabber
+from skm_pyutils.table import list_to_df
+
 
 def plot_dists(x, y, ax=None, **fmt_kwargs):
     """Plot distrubtions of two arrays."""

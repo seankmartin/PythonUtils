@@ -9,7 +9,7 @@ import traceback
 
 import psutil
 
-from skm_pyutils.py_path import make_path_if_not_exists
+from skm_pyutils.path import make_path_if_not_exists
 
 
 def log_exception(ex, more_info="", location=None):

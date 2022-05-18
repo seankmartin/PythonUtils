@@ -8,7 +8,7 @@ import warnings
 
 import numpy as np
 
-from skm_pyutils.py_path import get_all_files_in_dir
+from skm_pyutils.path import get_all_files_in_dir
 
 
 def merge_files(in_dir, all_result_ext=None):
