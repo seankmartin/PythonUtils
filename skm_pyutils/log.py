@@ -133,12 +133,7 @@ def setup_text_logging(
     None
 
     """
-    try:
-        numeric_level = int(loglevel)
-    except BaseException:
-        numeric_level = getattr(logging, loglevel.upper(), None)
-    if not isinstance(numeric_level, int):
-        raise ValueError("Invalid log level: %s" % loglevel)
+    numeric_level = convert_log_level(loglevel)
 
     if in_dir is None:
         fname = bname
@@ -169,7 +164,22 @@ def setup_text_logging(
     mpl_logger = logging.getLogger("matplotlib")
     mpl_logger.setLevel(level=logging.WARNING)
 
-    # print("See {} for {} level logs".format(fname, loglevel))
+def convert_log_level(loglevel):
+    """Convert string or int log level to numeric level for logging module"""
+    try:
+        numeric_level = int(loglevel)
+    except BaseException:
+        numeric_level = getattr(logging, loglevel.upper(), None)
+    if not isinstance(numeric_level, int):
+        raise ValueError(f"Invalid log level: {loglevel}")
+    return numeric_level
+
+def clear_handlers(logger):
+    """Clear the handlers from the passed logger."""
+    handlers = logger.handlers[:]
+    for handler in handlers:
+        handler.close()
+        logger.removeHandler(handler)
 
 
 class FileStdoutLogger:
@@ -291,14 +301,17 @@ class FileLogger:
             return "No log file exists."
 
     def clear_log_file(self):
-        handlers = self.logger.handlers[:]
-        for handler in handlers:
-            handler.close()
-            self.logger.removeHandler(handler)
+        self.clear_handlers()
 
         loc = self.get_default_log_location()
         if os.path.exists(loc):
             os.remove(loc)
+
+    def clear_handlers(self):
+        handlers = self.logger.handlers[:]
+        for handler in handlers:
+            handler.close()
+            self.logger.removeHandler(handler)
 
     def get_handlers(self):
         return self.logger.handlers[:]
