@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 
-def list_to_df(in_list, transpose=False, headers=None):
+def list_to_df(in_list, headers=None, transpose=False):
     """
     Convert a list to a dataframe with the given headers.
 
@@ -159,8 +159,7 @@ def df_subset_from_rows(df, rows):
     pandas.DataFrame
 
     """
-    df_subset = df.iloc[rows].copy().reset_index()
-    return df_subset
+    return df.iloc[rows].copy().reset_index()
 
 
 def show_interactive_table(table, notebook=False) -> None:
