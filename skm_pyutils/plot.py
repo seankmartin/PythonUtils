@@ -133,7 +133,7 @@ class GridFig:
     ):
         """
         Set up the grid specifications.
-    
+
         If only rows is passed, the number of columns and rows
         are automatically determined to be close to a square.
 
@@ -154,17 +154,15 @@ class GridFig:
 
     def auto_determine_grid(self, rows):
         closest_sqrt = 1
-        while (closest_sqrt * closest_sqrt) < rows:
+        while closest_sqrt**2 < rows:
             closest_sqrt += 1
         return closest_sqrt, closest_sqrt
 
     def get_ax(self, row_idx, col_idx, circular=False):
         """Add subplot with standard 1x1 gs -> returns ax."""
         if circular:
-            ax = self.fig.add_subplot(self.gs[row_idx, col_idx], projection="polar")
-        else:
-            ax = self.fig.add_subplot(self.gs[row_idx, col_idx])
-        return ax
+            return self.fig.add_subplot(self.gs[row_idx, col_idx], projection="polar")
+        return self.fig.add_subplot(self.gs[row_idx, col_idx])
 
     def get_multi_ax(self, row_start, row_end, col_start, col_end):
         """Add subplot with custom gs sizes -> returns ax."""
@@ -175,14 +173,14 @@ class GridFig:
     def save_fig(self, out_dir, out_name):
         """Names and saves figure."""
         out_loc = os.path.join(out_dir, out_name)
-        print("Saved figure to {}".format(out_loc))
+        print(f"Saved figure to {out_loc}")
         make_path_if_not_exists(out_loc)
         self.fig.savefig(out_loc, dpi=400)
         plt.close(self.fig)
 
     def savefig(self, fname, **kwargs):
         """Passes all to matplotlib savefig call"""
-        print("Saved figure to {}".format(fname))
+        print(f"Saved figure to {fname}")
         make_path_if_not_exists(fname)
         if "dpi" not in kwargs.keys():
             kwargs["dpi"] = 400
@@ -210,12 +208,11 @@ class GridFig:
             row_idx = self.idx // self.cols
             col_idx = self.idx % self.cols
 
-            ax = self.get_ax(row_idx, col_idx, circular=circular)
         else:
             row_idx = self.idx % self.rows
             col_idx = self.idx // self.rows
 
-            ax = self.get_ax(row_idx, col_idx, circular=circular)
+        ax = self.get_ax(row_idx, col_idx, circular=circular)
         self._increment()
         return ax
 
