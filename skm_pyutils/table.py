@@ -100,7 +100,7 @@ def df_to_file(df, filename, index=False, **kwargs):
     """
 
     def get_to_retry():
-        print("{} may currently be in use, try closing it".format(filename))
+        print(f"{filename} may currently be in use, try closing it")
         retry = True
         continue_ = True
         while retry:
@@ -113,11 +113,12 @@ def df_to_file(df, filename, index=False, **kwargs):
                 retry = False
                 continue_ = False
         if continue_:
-            print("Retrying saving to {}".format(filename))
+            print(f"Retrying saving to {filename}")
         return continue_
 
     ext = os.path.splitext(filename)[1]
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    if os.path.dirname(filename) != "":
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
     if ext == ".psv":
         try:
             df.to_csv(filename, sep="|", index=index, **kwargs)
