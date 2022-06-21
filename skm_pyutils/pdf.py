@@ -30,9 +30,9 @@ def pdf_cat(input_files, output_location):
         now = datetime.now()
         # current_time = now.strftime("%H-%M-%S")
         whole_time = now.strftime("%Y-%m-%d--%H-%M-%S")
-        output_location = "pdf_merge_" + whole_time + ".pdf"
+        output_location = f"pdf_merge_{whole_time}.pdf"
 
-    merger = PdfFileMerger()
+    merger = PdfFileMerger(strict=False)
     n_merged = 0
     for pdf in input_files:
         if os.path.exists(pdf):
@@ -40,7 +40,7 @@ def pdf_cat(input_files, output_location):
             merger.append(pdf)
             n_merged += 1
         else:
-            print("Warning: {} does not exist".format(pdf))
+            print(f"Warning: {pdf} does not exist")
     print(f"Saving merged output of {n_merged} files to {output_location}")
     merger.write(output_location)
     merger.close()
@@ -68,7 +68,7 @@ def merge_all_pdfs_in_dir(input_dir, out_name=None, recursive=False):
         now = datetime.now()
         # current_time = now.strftime("%H-%M-%S")
         whole_time = now.strftime("%Y-%m-%d--%H-%M-%S")
-        out_name = "pdf_merge_" + whole_time + ".pdf"
+        out_name = f"pdf_merge_{whole_time}.pdf"
         out_name = os.path.abspath(os.path.join(input_dir, out_name))
 
     pdf_files = get_all_files_in_dir(
@@ -77,6 +77,46 @@ def merge_all_pdfs_in_dir(input_dir, out_name=None, recursive=False):
 
     pdf_cat(pdf_files, out_name)
 
+
+def pdf_merge_ranges(input_files, ranges, output_location=None):
+    """
+    Merge pdfs from given list pased on page ranges.
+
+    Easiest way to do ranges is to import PageRange,
+    and then range like PageRange("0:4") or "0:-1".
+
+    Parameters
+    ----------
+    input_files : list of str
+        The pdf files to merge.
+    ranges : list of page ranges
+        The pdf page ranges
+    output_location : str, optional
+        Where to output the merged pdf, defaults to None.
+
+    Returns
+    -------
+    None
+
+    """
+    if output_location is None:
+        now = datetime.now()
+        # current_time = now.strftime("%H-%M-%S")
+        whole_time = now.strftime("%Y-%m-%d--%H-%M-%S")
+        output_location = f"pdf_merge_{whole_time}.pdf"
+
+    merger = PdfFileMerger(strict=False)
+    n_merged = 0
+    for pdf, r in zip(input_files, ranges):
+        if os.path.exists(pdf):
+            print(f"Merging {pdf} over range {r}")
+            merger.append(pdf, pages=r)
+            n_merged += 1
+        else:
+            print(f"Warning: {pdf} does not exist")
+    print(f"Saving merged output of {n_merged} files to {output_location}")
+    merger.write(output_location)
+    merger.close()
 
 def cli_entry():
     """Command line interface entry point."""
