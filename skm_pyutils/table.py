@@ -22,7 +22,7 @@ def list_to_df(in_list, headers=None, transpose=False):
         ...
         (col N) [1_N, 2_N, ..., M_N]
     ]
-    
+
     Parameters
     ----------
     in_list : list
@@ -154,7 +154,7 @@ def df_subset_from_rows(df, rows):
         The dataframe to subset from.
     rows : list-like of int
         The rows to grab.
-    
+
     Returns
     -------
     pandas.DataFrame
@@ -173,10 +173,12 @@ def show_interactive_table(table, notebook=False) -> None:
         dtale.show(table).open_browser()
 
 
-def filter_table(table: "pd.DataFrame", filter_dict: "dict[str, list]", and_: "bool" = True) -> "pd.DataFrame":
+def filter_table(
+    table: "pd.DataFrame", filter_dict: "dict[str, list]", and_: "bool" = True
+) -> "pd.DataFrame":
     """
     Filter a table based on a dictionary with possible values.
-    
+
     Parameters
     ----------
     table: pd.DataFrame
@@ -187,7 +189,7 @@ def filter_table(table: "pd.DataFrame", filter_dict: "dict[str, list]", and_: "b
     and_: bool, optional
         Whether to combine with logical_and or with logical_or,
         By default logical_and.
-    
+
     Returns
     -------
     filtered_dataframe : pd.DataFrame
@@ -196,13 +198,9 @@ def filter_table(table: "pd.DataFrame", filter_dict: "dict[str, list]", and_: "b
     """
     if len(filter_dict) == 0:
         return table
-    filters = []
-    for k, v in filter_dict.items():
-        filters.append(table[k].isin(v))
+    filters = [table[k].isin(v) for k, v in filter_dict.items()]
     if and_:
         full_mask = np.logical_and.reduce(np.array(filters))
     else:
         full_mask = np.logical_or.reduce(np.array(filters))
-    filtered_table = table[full_mask]
-    return filtered_table
-    
+    return table[full_mask]
