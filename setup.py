@@ -16,7 +16,16 @@ URL = "https://github.com/seankmartin/PythonUtils"
 DOWNLOAD_URL = "https://github.com/seankmartin/PythonUtils/archive/0.1.6.tar.gz"
 VERSION = "0.1.6"
 
-INSTALL_REQUIRES = ["numpy", "matplotlib", "seaborn", "PyPDF2", "rich", "psutil", "pyyaml"]
+INSTALL_REQUIRES = [
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "PyPDF2",
+    "rich",
+    "psutil",
+    "pyyaml",
+    "pingouin",
+]
 
 PACKAGES = ["skm_pyutils"]
 
