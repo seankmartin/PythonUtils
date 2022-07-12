@@ -4,3 +4,5 @@ seaborn
 rich
 PyPDF2
 pyyaml
+pingouin
+psutil
