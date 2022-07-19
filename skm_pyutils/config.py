@@ -4,7 +4,6 @@ import json
 import os
 import sys
 from pprint import pprint
-
 import yaml
 
 
@@ -144,22 +143,25 @@ def read_python(path, dirname_replacement=""):
         exec(contents, {}, metadata)
     except Exception as e:
         import traceback
+
         print("QUITTING: An error occurred reading {}".format(path))
         traceback.print_exc()
         exit(-1)
     metadata = {k.lower(): v for (k, v) in metadata.items()}
     return metadata
 
+
 def read_yaml(path):
-    with open(path, 'r') as stream:
-        parsed_yaml=yaml.safe_load(stream)
+    with open(path, "r") as stream:
+        parsed_yaml = yaml.safe_load(stream)
     return parsed_yaml
 
 
 def read_json(path):
-    with open(path, 'r') as stream:
+    with open(path, "r") as stream:
         parsed_json = json.load(stream)
     return parsed_json
+
 
 def split_dict(in_dict, index):
     """
@@ -183,3 +185,58 @@ def split_dict(in_dict, index):
         if isinstance(value, list):
             new_dict[key] = value[index]
     return new_dict
+
+def convert_dict_to_string(in_dict, name):
+    """
+    Convert the underlying parameters dictionary to string.
+
+    Can be useful for printing or writing to a file.
+    Does not overwrite default __str__ as the output is quite verbose.
+
+    Parameters
+    ----------
+    in_dict : dict
+        Input dictionary
+
+    Returns
+    -------
+    str
+        The string representation of the dict.
+
+    """
+
+    def _val_to_str(val):
+        """
+        Convert a value to a string.
+
+        One caveat, if a string is passed, it returns
+        the original string wrapped in quotes.
+
+        Parameters
+        ----------
+        val : object
+            The value to convert
+
+        Returns
+        -------
+        str
+            The value as a string.
+
+        """
+        return f"'{val}'" if isinstance(val, str) else val
+
+    out_str = ""
+    out_str += name + " = {\n"
+    for k, v in in_dict.items():
+        out_str += f"\t{_val_to_str(str(k))}:"
+        if isinstance(v, dict):
+            out_str += "\n\t\t{\n"
+            for k2, v2 in v.items():
+                out_str += "\t\t {}: {},\n".format(
+                    _val_to_str(str(k2)), _val_to_str(v2)
+                )
+            out_str += "\t\t},\n"
+        else:
+            out_str += f" {_val_to_str(v)},\n"
+    out_str += "\t}"
+    return out_str
