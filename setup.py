@@ -13,8 +13,8 @@ DISTNAME = "skm_pyutils"
 MAINTAINER = "Sean Martin"
 MAINTAINER_EMAIL = "martins7@tcd.ie"
 URL = "https://github.com/seankmartin/PythonUtils"
-DOWNLOAD_URL = "https://github.com/seankmartin/PythonUtils/archive/0.1.7.tar.gz"
-VERSION = "0.1.7"
+DOWNLOAD_URL = "https://github.com/seankmartin/PythonUtils/archive/0.1.8.tar.gz"
+VERSION = "0.1.8"
 
 INSTALL_REQUIRES = [
     "numpy",
