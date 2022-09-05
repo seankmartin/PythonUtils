@@ -30,6 +30,7 @@
 <pre><code class="python">&#34;&#34;&#34;Utilities for saving structures to disk.&#34;&#34;&#34;
 import csv
 import os
+from typing import Union
 
 import numpy as np
 
@@ -162,7 +163,86 @@ def save_dicts_to_csv(filename, in_dicts, do_sort=True):
                 writer.writerow(in_dict)
 
     except Exception as e:
-        log_exception(e, &#34;When {} saving to csv&#34;.format(filename))</code></pre>
+        log_exception(e, &#34;When {} saving to csv&#34;.format(filename))
+
+
+def data_dict_from_attr_list(
+    input_item, attr_list: list, friendly_names: Union[&#34;list[str]&#34;, None] = None
+):
+    &#34;&#34;&#34;
+    From a list of attributes, return a dictionary.
+
+    Each item in attr_list should be a tuple containing
+    attributes, keys, or None.
+    The elements of the tuple are then accessed iteratively, like
+    item.tuple_el1.tuple_el2...
+    If the element is an attribute, it is directly retrieved.
+    If the element is a key in a dictionary, that is retrieved.
+    If the element is None, it indicates a break.
+    (This last option can be used to get functions without calling them,
+    or to get a full dictionary instead of pulling out the key, value pairs.)
+
+    The output also depends on what is retrieved, if a dictionary or a function.
+    Functions are called with no arguments.
+    Dictionaries have key value pairs, that are stored in the output dictionary.
+    Both of these can be avoided by passing the last element of the tuple as None.
+
+    As an example:
+    item.results = {&#34;addition&#34;: {&#34;1 + 1&#34;: 2}}
+    item.data.running_speed = [0.5, 1.4, 1.5]
+    attr_list = [(&#34;results&#34;, &#34;addition&#34;, None)]
+    this_fn(attr_list) = {&#34;results_addition&#34;: {&#34;1 + 1&#34; = 2}}
+    attr_list = [(&#34;results&#34;, &#34;addition&#34;), (&#34;data&#34;, &#34;running_speed&#34;)]
+    this_fn(attr_list) = {&#34;1 + 1&#34;: 2, &#34;data_running_speed&#34;: [0.5, 1.4, 1.5]}
+
+    Parameters
+    ----------
+    input_item : Any
+        The item to get data attributes from.
+    attr_list : list
+        The list of attributes to retrieve.
+    friendly_names : list of str, optional
+        What to name each retrieved attribute, (default None).
+        Must be the same size as attr_list or None.
+
+    Returns
+    -------
+    dict
+        The retrieved attributes.
+
+    Raises
+    ------
+    ValueError
+        attr_list and friendly_names are not the same size.
+
+    &#34;&#34;&#34;
+    if friendly_names is not None and len(friendly_names) != len(attr_list):
+        raise ValueError(&#34;friendly_names and attr_list must be the same length&#34;)
+
+    data_out = {}
+    for i, attr_tuple in enumerate(attr_list):
+        item = input_item
+        for a in attr_tuple:
+            if a is None:
+                break
+            item = (
+                getattr(item, a) if isinstance(a, str) and hasattr(item, a) else item[a]
+            )
+            if callable(item):
+                item = item()
+        if isinstance(item, dict):
+            for key, value in item.items():
+                data_out[key] = value
+        else:
+            non_none_attrs = [x for x in attr_tuple if x is not None]
+            if friendly_names is None:
+                key = &#34;_&#34;.join(non_none_attrs)
+            else:
+                key = friendly_names[i]
+                if key is None:
+                    key = &#34;_&#34;.join(non_none_attrs)
+            data_out[key] = item
+    return data_out</code></pre>
 </details>
 </section>
 <section>
@@ -188,6 +268,134 @@ def save_dicts_to_csv(filename, in_dicts, do_sort=True):
         out_str = &#34;{}, {}&#34;.format(out_str, str_val)
 
     return out_str</code></pre>
+</details>
+</dd>
+<dt id="skm_pyutils.save.data_dict_from_attr_list"><code class="name flex">
+<span>def <span class="ident">data_dict_from_attr_list</span></span>(<span>input_item, attr_list: list, friendly_names: Optional[ForwardRef('list[str]')] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>From a list of attributes, return a dictionary.</p>
+<p>Each item in attr_list should be a tuple containing
+attributes, keys, or None.
+The elements of the tuple are then accessed iteratively, like
+item.tuple_el1.tuple_el2&hellip;
+If the element is an attribute, it is directly retrieved.
+If the element is a key in a dictionary, that is retrieved.
+If the element is None, it indicates a break.
+(This last option can be used to get functions without calling them,
+or to get a full dictionary instead of pulling out the key, value pairs.)</p>
+<p>The output also depends on what is retrieved, if a dictionary or a function.
+Functions are called with no arguments.
+Dictionaries have key value pairs, that are stored in the output dictionary.
+Both of these can be avoided by passing the last element of the tuple as None.</p>
+<p>As an example:
+item.results = {"addition": {"1 + 1": 2}}
+item.data.running_speed = [0.5, 1.4, 1.5]
+attr_list = [("results", "addition", None)]
+this_fn(attr_list) = {"results_addition": {"1 + 1" = 2}}
+attr_list = [("results", "addition"), ("data", "running_speed")]
+this_fn(attr_list) = {"1 + 1": 2, "data_running_speed": [0.5, 1.4, 1.5]}</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>input_item</code></strong> :&ensp;<code>Any</code></dt>
+<dd>The item to get data attributes from.</dd>
+<dt><strong><code>attr_list</code></strong> :&ensp;<code>list</code></dt>
+<dd>The list of attributes to retrieve.</dd>
+<dt><strong><code>friendly_names</code></strong> :&ensp;<code>list</code> of <code>str</code>, optional</dt>
+<dd>What to name each retrieved attribute, (default None).
+Must be the same size as attr_list or None.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>The retrieved attributes.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>ValueError</code></dt>
+<dd>attr_list and friendly_names are not the same size.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def data_dict_from_attr_list(
+    input_item, attr_list: list, friendly_names: Union[&#34;list[str]&#34;, None] = None
+):
+    &#34;&#34;&#34;
+    From a list of attributes, return a dictionary.
+
+    Each item in attr_list should be a tuple containing
+    attributes, keys, or None.
+    The elements of the tuple are then accessed iteratively, like
+    item.tuple_el1.tuple_el2...
+    If the element is an attribute, it is directly retrieved.
+    If the element is a key in a dictionary, that is retrieved.
+    If the element is None, it indicates a break.
+    (This last option can be used to get functions without calling them,
+    or to get a full dictionary instead of pulling out the key, value pairs.)
+
+    The output also depends on what is retrieved, if a dictionary or a function.
+    Functions are called with no arguments.
+    Dictionaries have key value pairs, that are stored in the output dictionary.
+    Both of these can be avoided by passing the last element of the tuple as None.
+
+    As an example:
+    item.results = {&#34;addition&#34;: {&#34;1 + 1&#34;: 2}}
+    item.data.running_speed = [0.5, 1.4, 1.5]
+    attr_list = [(&#34;results&#34;, &#34;addition&#34;, None)]
+    this_fn(attr_list) = {&#34;results_addition&#34;: {&#34;1 + 1&#34; = 2}}
+    attr_list = [(&#34;results&#34;, &#34;addition&#34;), (&#34;data&#34;, &#34;running_speed&#34;)]
+    this_fn(attr_list) = {&#34;1 + 1&#34;: 2, &#34;data_running_speed&#34;: [0.5, 1.4, 1.5]}
+
+    Parameters
+    ----------
+    input_item : Any
+        The item to get data attributes from.
+    attr_list : list
+        The list of attributes to retrieve.
+    friendly_names : list of str, optional
+        What to name each retrieved attribute, (default None).
+        Must be the same size as attr_list or None.
+
+    Returns
+    -------
+    dict
+        The retrieved attributes.
+
+    Raises
+    ------
+    ValueError
+        attr_list and friendly_names are not the same size.
+
+    &#34;&#34;&#34;
+    if friendly_names is not None and len(friendly_names) != len(attr_list):
+        raise ValueError(&#34;friendly_names and attr_list must be the same length&#34;)
+
+    data_out = {}
+    for i, attr_tuple in enumerate(attr_list):
+        item = input_item
+        for a in attr_tuple:
+            if a is None:
+                break
+            item = (
+                getattr(item, a) if isinstance(a, str) and hasattr(item, a) else item[a]
+            )
+            if callable(item):
+                item = item()
+        if isinstance(item, dict):
+            for key, value in item.items():
+                data_out[key] = value
+        else:
+            non_none_attrs = [x for x in attr_tuple if x is not None]
+            if friendly_names is None:
+                key = &#34;_&#34;.join(non_none_attrs)
+            else:
+                key = friendly_names[i]
+                if key is None:
+                    key = &#34;_&#34;.join(non_none_attrs)
+            data_out[key] = item
+    return data_out</code></pre>
 </details>
 </dd>
 <dt id="skm_pyutils.save.save_dicts_to_csv"><code class="name flex">
@@ -389,6 +597,7 @@ Each key in the dictionary is saved as a row in the output csv.</p>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="skm_pyutils.save.arr_to_str" href="#skm_pyutils.save.arr_to_str">arr_to_str</a></code></li>
+<li><code><a title="skm_pyutils.save.data_dict_from_attr_list" href="#skm_pyutils.save.data_dict_from_attr_list">data_dict_from_attr_list</a></code></li>
 <li><code><a title="skm_pyutils.save.save_dicts_to_csv" href="#skm_pyutils.save.save_dicts_to_csv">save_dicts_to_csv</a></code></li>
 <li><code><a title="skm_pyutils.save.save_mixed_dict_to_csv" href="#skm_pyutils.save.save_mixed_dict_to_csv">save_mixed_dict_to_csv</a></code></li>
 <li><code><a title="skm_pyutils.save.val_to_str" href="#skm_pyutils.save.val_to_str">val_to_str</a></code></li>

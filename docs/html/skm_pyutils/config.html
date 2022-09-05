@@ -33,7 +33,6 @@ import json
 import os
 import sys
 from pprint import pprint
-
 import yaml
 
 
@@ -173,22 +172,25 @@ def read_python(path, dirname_replacement=&#34;&#34;):
         exec(contents, {}, metadata)
     except Exception as e:
         import traceback
+
         print(&#34;QUITTING: An error occurred reading {}&#34;.format(path))
         traceback.print_exc()
         exit(-1)
     metadata = {k.lower(): v for (k, v) in metadata.items()}
     return metadata
 
+
 def read_yaml(path):
-    with open(path, &#39;r&#39;) as stream:
-        parsed_yaml=yaml.safe_load(stream)
+    with open(path, &#34;r&#34;) as stream:
+        parsed_yaml = yaml.safe_load(stream)
     return parsed_yaml
 
 
 def read_json(path):
-    with open(path, &#39;r&#39;) as stream:
+    with open(path, &#34;r&#34;) as stream:
         parsed_json = json.load(stream)
     return parsed_json
+
 
 def split_dict(in_dict, index):
     &#34;&#34;&#34;
@@ -211,7 +213,62 @@ def split_dict(in_dict, index):
     for key, value in in_dict.items():
         if isinstance(value, list):
             new_dict[key] = value[index]
-    return new_dict</code></pre>
+    return new_dict
+
+def convert_dict_to_string(in_dict, name):
+    &#34;&#34;&#34;
+    Convert the underlying parameters dictionary to string.
+
+    Can be useful for printing or writing to a file.
+    Does not overwrite default __str__ as the output is quite verbose.
+
+    Parameters
+    ----------
+    in_dict : dict
+        Input dictionary
+
+    Returns
+    -------
+    str
+        The string representation of the dict.
+
+    &#34;&#34;&#34;
+
+    def _val_to_str(val):
+        &#34;&#34;&#34;
+        Convert a value to a string.
+
+        One caveat, if a string is passed, it returns
+        the original string wrapped in quotes.
+
+        Parameters
+        ----------
+        val : object
+            The value to convert
+
+        Returns
+        -------
+        str
+            The value as a string.
+
+        &#34;&#34;&#34;
+        return f&#34;&#39;{val}&#39;&#34; if isinstance(val, str) else val
+
+    out_str = &#34;&#34;
+    out_str += name + &#34; = {\n&#34;
+    for k, v in in_dict.items():
+        out_str += f&#34;\t{_val_to_str(str(k))}:&#34;
+        if isinstance(v, dict):
+            out_str += &#34;\n\t\t{\n&#34;
+            for k2, v2 in v.items():
+                out_str += &#34;\t\t {}: {},\n&#34;.format(
+                    _val_to_str(str(k2)), _val_to_str(v2)
+                )
+            out_str += &#34;\t\t},\n&#34;
+        else:
+            out_str += f&#34; {_val_to_str(v)},\n&#34;
+    out_str += &#34;\t}&#34;
+    return out_str</code></pre>
 </details>
 </section>
 <section>
@@ -221,6 +278,83 @@ def split_dict(in_dict, index):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="skm_pyutils.config.convert_dict_to_string"><code class="name flex">
+<span>def <span class="ident">convert_dict_to_string</span></span>(<span>in_dict, name)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Convert the underlying parameters dictionary to string.</p>
+<p>Can be useful for printing or writing to a file.
+Does not overwrite default <strong>str</strong> as the output is quite verbose.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>in_dict</code></strong> :&ensp;<code>dict</code></dt>
+<dd>Input dictionary</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>The string representation of the dict.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def convert_dict_to_string(in_dict, name):
+    &#34;&#34;&#34;
+    Convert the underlying parameters dictionary to string.
+
+    Can be useful for printing or writing to a file.
+    Does not overwrite default __str__ as the output is quite verbose.
+
+    Parameters
+    ----------
+    in_dict : dict
+        Input dictionary
+
+    Returns
+    -------
+    str
+        The string representation of the dict.
+
+    &#34;&#34;&#34;
+
+    def _val_to_str(val):
+        &#34;&#34;&#34;
+        Convert a value to a string.
+
+        One caveat, if a string is passed, it returns
+        the original string wrapped in quotes.
+
+        Parameters
+        ----------
+        val : object
+            The value to convert
+
+        Returns
+        -------
+        str
+            The value as a string.
+
+        &#34;&#34;&#34;
+        return f&#34;&#39;{val}&#39;&#34; if isinstance(val, str) else val
+
+    out_str = &#34;&#34;
+    out_str += name + &#34; = {\n&#34;
+    for k, v in in_dict.items():
+        out_str += f&#34;\t{_val_to_str(str(k))}:&#34;
+        if isinstance(v, dict):
+            out_str += &#34;\n\t\t{\n&#34;
+            for k2, v2 in v.items():
+                out_str += &#34;\t\t {}: {},\n&#34;.format(
+                    _val_to_str(str(k2)), _val_to_str(v2)
+                )
+            out_str += &#34;\t\t},\n&#34;
+        else:
+            out_str += f&#34; {_val_to_str(v)},\n&#34;
+    out_str += &#34;\t}&#34;
+    return out_str</code></pre>
+</details>
+</dd>
 <dt id="skm_pyutils.config.parse_args"><code class="name flex">
 <span>def <span class="ident">parse_args</span></span>(<span>parser, verbose=True)</span>
 </code></dt>
@@ -380,7 +514,7 @@ def split_dict(in_dict, index):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def read_json(path):
-    with open(path, &#39;r&#39;) as stream:
+    with open(path, &#34;r&#34;) as stream:
         parsed_json = json.load(stream)
     return parsed_json</code></pre>
 </details>
@@ -467,6 +601,7 @@ By default, None will replace <strong>dirname</strong> with dirname of path.</dd
         exec(contents, {}, metadata)
     except Exception as e:
         import traceback
+
         print(&#34;QUITTING: An error occurred reading {}&#34;.format(path))
         traceback.print_exc()
         exit(-1)
@@ -484,8 +619,8 @@ By default, None will replace <strong>dirname</strong> with dirname of path.</dd
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def read_yaml(path):
-    with open(path, &#39;r&#39;) as stream:
-        parsed_yaml=yaml.safe_load(stream)
+    with open(path, &#34;r&#34;) as stream:
+        parsed_yaml = yaml.safe_load(stream)
     return parsed_yaml</code></pre>
 </details>
 </dd>
@@ -551,7 +686,8 @@ By default, None will replace <strong>dirname</strong> with dirname of path.</dd
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="two-column">
+<ul class="">
+<li><code><a title="skm_pyutils.config.convert_dict_to_string" href="#skm_pyutils.config.convert_dict_to_string">convert_dict_to_string</a></code></li>
 <li><code><a title="skm_pyutils.config.parse_args" href="#skm_pyutils.config.parse_args">parse_args</a></code></li>
 <li><code><a title="skm_pyutils.config.print_cfg" href="#skm_pyutils.config.print_cfg">print_cfg</a></code></li>
 <li><code><a title="skm_pyutils.config.read_cfg" href="#skm_pyutils.config.read_cfg">read_cfg</a></code></li>
