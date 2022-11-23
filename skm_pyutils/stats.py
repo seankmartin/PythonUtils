@@ -289,7 +289,9 @@ def mwu(x, y, fmt_kwargs=None, do_plot=False, ax=None, **kwargs):
     cl = np.round(results_df["CLES"].values[0], n_decimals)
     median1 = np.round(np.nanmedian(x), n_decimals)
     lowerq1, higherq1 = np.round(np.nanpercentile(x, [25, 75]), n_decimals)
+    diff1 = np.round(higherq1 - lowerq1, n_decimals)
     lowerq2, higherq2 = np.round(np.nanpercentile(y, [25, 75]), n_decimals)
+    diff2 = np.round(higherq2 - lowerq2, n_decimals)
     median2 = np.round(np.nanmedian(y), n_decimals)
 
     sample_size1 = len(x)
@@ -322,7 +324,8 @@ def mwu(x, y, fmt_kwargs=None, do_plot=False, ax=None, **kwargs):
     if show_quartiles:
         results_str = (
             f"Median [quartiles] {vname} in groups {group1_name} and {group2_name} were "
-            + f"{median1} [{lowerq1}, {higherq1}] and {median2} [{lowerq2}, {higherq2}]"
+            f"{median1} [{lowerq1}, {higherq1}] ({diff1}) "
+            f"and {median2} [{lowerq2}, {higherq2}] ({diff2}) "
             f"{unit_name}respectively; "
             f"the distributions in the two groups {differ_str} {stats_str}"
         )
