@@ -424,7 +424,7 @@ def cli_copy_files_in_dir():
 
         os.makedirs(parsed.output_directory, exist_ok=True)
         for fname in files:
-            output_loc = os.path.join(parsed.output_directory, fname)
+            output_loc = os.path.join(parsed.output_directory, fname.replace(os.sep, "--"))
             input_loc = os.path.join(parsed.input_directory, fname)
             if parsed.move:
                 shutil.move(input_loc, output_loc)
