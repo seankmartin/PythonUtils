@@ -67,6 +67,38 @@ def default_stats(profile_location):
             + "python -m cProfile -o <profile_location> <filename>"
         )
 
+def timeit(name):
+    """Decorator to time code performance.
+    
+    Parameters
+    ----------
+    name : str
+        The name of the function to be timed.
+    
+    Returns
+    -------
+    inner : function
+        The wrapper function.
+    
+    Usage
+    -----
+    @timeit("func1")
+    def func1(...):
+        ...
+    
+    """
+    def inner(func):
+        def wrapper(*args, **kwargs):
+            t1 = perf_counter()
+            func(*args, **kwargs)
+            t2 = perf_counter()
+
+            print(f"{name} took {t2 - t1:.2f} seconds")
+
+        return wrapper
+
+    return inner
+
 
 def main():
     parser = argparse.ArgumentParser("Command line interface")
