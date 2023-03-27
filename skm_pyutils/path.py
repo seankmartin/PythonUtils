@@ -84,6 +84,8 @@ def get_all_files_in_dir(
         A list of filenames with the given parameters.
 
     """
+    if in_dir == "":
+        in_dir = "."
     if not os.path.isdir(in_dir):
         raise ValueError("Non existant directory " + str(in_dir))
 
