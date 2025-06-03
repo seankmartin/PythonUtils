@@ -14,7 +14,7 @@ MAINTAINER = "Sean Martin"
 MAINTAINER_EMAIL = "martins7@tcd.ie"
 URL = "https://github.com/seankmartin/PythonUtils"
 DOWNLOAD_URL = "https://github.com/seankmartin/PythonUtils/archive/0.1.8.tar.gz"
-VERSION = "1.0.0"
+VERSION = "1.0.2"
 
 INSTALL_REQUIRES = [
     "numpy",
