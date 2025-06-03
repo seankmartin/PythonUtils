@@ -4,7 +4,7 @@ import argparse
 import os
 from datetime import datetime
 
-from PyPDF2 import PdfFileMerger
+from PyPDF2 import PdfMerger
 
 from skm_pyutils.config import parse_args
 from skm_pyutils.path import get_all_files_in_dir
@@ -32,7 +32,7 @@ def pdf_cat(input_files, output_location):
         whole_time = now.strftime("%Y-%m-%d--%H-%M-%S")
         output_location = f"pdf_merge_{whole_time}.pdf"
 
-    merger = PdfFileMerger(strict=False)
+    merger = PdfMerger(strict=False)
     n_merged = 0
     for pdf in input_files:
         if os.path.exists(pdf):
@@ -105,7 +105,7 @@ def pdf_merge_ranges(input_files, ranges, output_location=None):
         whole_time = now.strftime("%Y-%m-%d--%H-%M-%S")
         output_location = f"pdf_merge_{whole_time}.pdf"
 
-    merger = PdfFileMerger(strict=False)
+    merger = PdfMerger(strict=False)
     n_merged = 0
     for pdf, r in zip(input_files, ranges):
         if os.path.exists(pdf):
